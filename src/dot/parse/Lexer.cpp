@@ -11,7 +11,6 @@ void Lexer::start(char *str) {
 }
 
 Token *Lexer::nextToken() {
-    if(*cur == 0) return new Token(T_EOF, "\\eof");
     return lex();
 }
 
@@ -21,31 +20,32 @@ Token *Lexer::lex() {
     std::string str;
     while(true) {
         int id = getid(*cur);
-        if(id == -1) throw LexerException(std::string("Unrecognized character: ") + *cur);
         int nid = state_table[state][id];
-        if(nid == 0) this->cur = ++cur;
-        else if(nid < 0) {
-            Token *ret = nullptr;
-            switch (-nid) {
-                case 1: ret = new Token(T_COLON, ":"); break;
-                case 2: ret = new Token(T_ASSIGN, "="); break;
-                case 3: ret = new Token(T_LAZY_ASSIGN, ":="); break;
-                case 4: ret = new Token(T_NUMBER, str); break;
-                case 5: ret = new Token(T_IDENT, str); break;
-                case 8: ret = new Token(T_KW_DEF, "def"); break;
-                case 9: ret = new Token(T_EQUAL, "=="); break;
-
-                case 10: ret = new Token(T_PLUS, "+"); break;
-                case 11: ret = new Token(T_MINUS, "-"); break;
-                case 12: ret = new Token(T_PLUS_ASSIGN, "+="); break;
-                case 13: ret = new Token(T_MINUS_ASSIGN, "-="); break;
-                case 14: ret = new Token(T_INCREMENT, "++"); break;
-                case 15: ret = new Token(T_DECREMENT, "--"); break;
-
-                default: throw LexerException(std::string("Lexer error: ") + *cur);
-            }
+        if(nid == 0) {
             this->cur = cur;
-            return ret;
+            switch (state) {
+                case 1:     return new Token(T_COLON,         str);
+                case 2:     return new Token(T_ASSIGN,        str);
+                case 3:     return new Token(T_LAZY_ASSIGN,   str);
+                case 4:     return new Token(T_NUMBER,        str);
+                case 5: case 6:
+                case 7:     return new Token(T_IDENT,         str);
+                case 8:     return new Token(T_KW_DEF,        str);
+                case 9:     return new Token(T_EQUAL,         str);
+                case 10:    return new Token(T_PLUS,          str);
+                case 11:    return new Token(T_MINUS,         str);
+                case 12:    return new Token(T_PLUS_ASSIGN,   str);
+                case 13:    return new Token(T_MINUS_ASSIGN,  str);
+                case 14:    return new Token(T_INCREMENT,     str);
+                case 15:    return new Token(T_DECREMENT,     str);
+                case 16:    return new Token(T_QUOTE,         str);
+                case 17: break;
+                case 18:    return new Token(T_EOF,       "\\eof");
+
+                default: throw LexerException(str);
+            }
+            state = 0;
+            str = "";
         } else {
             state = nid;
             str += *cur;

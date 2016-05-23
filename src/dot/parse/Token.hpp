@@ -18,6 +18,8 @@ enum TokenType {
     T_LAZY_ASSIGN,
     T_EQUAL,
 
+    T_QUOTE,
+
     T_PLUS, T_MINUS,
     T_PLUS_ASSIGN, T_MINUS_ASSIGN,
     T_INCREMENT, T_DECREMENT,

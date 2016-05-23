@@ -12,11 +12,12 @@ int main(int argc, char **argv) {
 
     try {
         lex->start(
-                "ident IDENT id3nt\n"
-                        "1 23 456 +11 -23\n"
-                        ": = :=\n"
-                        "== + - += -= ++ --\n"
-                        "def x");
+                (char *) "ident IDENT id3nt\n"
+                                        "1 23 456 +11 -23\n"
+                                        ": = :=\n"
+                                        "== + - += -= ++ --\n"
+                                        "def x\n"
+                        "\"\"");
     } catch (LexerException e) {
         std::cerr << "Lexer error: " << e.msg << std::endl;
         exit(-1);
@@ -26,7 +27,7 @@ int main(int argc, char **argv) {
         try {
             tok = lex->nextToken();
         } catch (LexerException e) {
-            std::cerr << e.msg << std::endl;
+            std::cerr << "Lexical error: " << e.msg << std::endl;
             exit(-1);
         }
         std::cout << "Token: " << tok->type << " : " << tok->str << std::endl;
