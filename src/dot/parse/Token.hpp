@@ -6,15 +6,15 @@
 #define DOTLANG_TOKEN_HPP
 
 #include <string>
+#include "Position.hpp"
 
 enum TokenType {
     T_EOF = -1,
     T_IDENT,
     T_NUMBER,
-    T_FLOAT,
+    T_ASSIGN,
 
     T_COLON,
-    T_ASSIGN,
     T_LAZY_ASSIGN,
     T_EQUAL,
 
@@ -29,9 +29,10 @@ enum TokenType {
 
 struct Token {
     TokenType type;
-    std::string str;
+    unsigned long symbol_id;
+    Position pos;
 
-    Token(TokenType type, std::string str): type(type), str(str) {}
+    Token(TokenType type, Position pos, unsigned long symbol_id): type(type), pos(pos), symbol_id(symbol_id) {}
 };
 
 #endif //DOTLANG_TOKEN_HPP

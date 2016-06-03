@@ -1,0 +1,9 @@
+x = 7
+
+switch(x) {
+    0: println("x equal to 0")
+    1: println("x equal to 1")
+    2: println("x equal to 2")
+    7: println("x equal to 3")
+    @: println("undefined state")
+}
