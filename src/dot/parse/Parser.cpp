@@ -12,11 +12,12 @@ ExprNode *Parser::parse() {
     tokens.push_back(lex->nextToken());
     curtok = tokens.get();
     ListNode *list = new ListNode();
+    ListNode *cur = list;
     while (curtok->type != T_EOF) {
-        list->val = parseStmt();
-        list->next = new ListNode();
-        list->next->prev = list;
-        list = list->next;
+        cur->val = parseStmt();
+        cur->next = new ListNode();
+        cur->next->prev = cur;
+        cur = cur->next;
     }
     tokens.to_end();
     do {

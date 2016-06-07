@@ -10,12 +10,7 @@
 #include <map>
 #include "Token.hpp"
 
-typedef std::map<unsigned long, std::string> SymbolTable;
-
-struct LexerException {
-    std::string msg;
-    LexerException(std::string msg): msg(msg) {}
-};
+typedef std::map<unsigned long, std::string*> SymbolTable;
 
 class Lexer {
     std::istream *code;

@@ -11,7 +11,7 @@
 enum NodeType {
     NUMBER, STRING,
     VARIABLE,
-    BINOPERATOR, UNOPERATOR,
+    BINOPERATOR, UNOPERATOR, ASSIGN,
     LIST
 };
 
@@ -46,6 +46,13 @@ struct UnaryOpNode: public ExprNode {
     ExprNode *right;
     NodeType type() { return UNOPERATOR; }
     UnaryOpNode(int op, ExprNode *right): op(op), right(right) {}
+};
+struct AssignOpNode: public ExprNode {
+    int op;
+    VarExprNode *left;
+    ExprNode *right;
+    NodeType type() { return ASSIGN; }
+    AssignOpNode(int op, VarExprNode *left, ExprNode *right): op(op), left(left), right(right) {}
 };
 struct ListNode: public ExprNode {
     ListNode *prev = nullptr, *next = nullptr;

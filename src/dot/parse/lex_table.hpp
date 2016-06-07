@@ -7,6 +7,7 @@
 
 #include "Token.hpp"
 #include "Lexer.hpp"
+#include "../Exception.hpp"
 
 /*
  * 0 - 'd'

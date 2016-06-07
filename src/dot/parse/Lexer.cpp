@@ -5,16 +5,13 @@
 #include "Lexer.hpp"
 #include "lex_table.hpp"
 
-//void Lexer::start(char *str, SymbolTable *symtbl) {
 void Lexer::start(std::istream *str, SymbolTable *symtbl) {
     code = str;
     cur = (char) str->get();
-    //cur = code;
     sym = symtbl;
 }
 
 Token *Lexer::nextToken() {
-    //if(code->eof()) return new Token(T_EOF, Position(0, 0), 0);
     return lex();
 }
 
@@ -26,7 +23,6 @@ Token *Lexer::lex() {
         int id = getid(cur);
         int nid = state_table[state][id];
         if(nid == 0) {
-            //this->cur = cur;
             switch (state) {
                 case 1:     return new Token(T_COLON, token_start, 0);
                 case 2:     return new Token(T_ASSIGN, token_start, 0);
@@ -55,9 +51,7 @@ Token *Lexer::lex() {
             str = "";
         } else {
             state = nid;
-            //str += *cur;
             str += cur;
-            //cur++;
             cur = (char) code->get();
             pos.next();
         }
@@ -66,10 +60,10 @@ Token *Lexer::lex() {
 
 unsigned long Lexer::addsym() {
     for(SymbolTable::iterator it = sym->begin(); it != sym->end(); it++)
-        if(it->second == str)
+        if(*(it->second) == str)
             return it->first;
     unsigned long id = cur_id++;
-    sym->insert(std::pair<unsigned long, std::string>(id, str));
+    sym->insert(std::pair<unsigned long, std::string*>(id, new std::string(str)));
     return id;
 }
 

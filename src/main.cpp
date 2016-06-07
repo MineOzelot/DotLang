@@ -3,41 +3,35 @@
 //
 
 
-#include <sstream>
 #include <iostream>
+#include <fstream>
+#include "dot/Dot.hpp"
 
-#include "dot/parse/Lexer.hpp"
-#include "dot/parse/Parser.hpp"
+int main(int argc, char *argv[]) {
+    std::istream *in;
 
-int main(int argc, char **argv) {
-    Lexer *lex = new Lexer();
-    Parser *parser = new Parser(lex);
-
-    try {
-        SymbolTable *sym = new SymbolTable();
-        lex->start(
-                //(char *) "x = 7 y = 5", sym);
-                &(std::cin), sym);
-        /*while(true) {
-            Token *tok = lex->nextToken();
-            std::cout
-            << "Token(" << tok->type << ", "
-            << tok->symbol_id << ", ("
-            << tok->pos.col << ", "
-            << tok->pos.row << "))\n";
-            if(tok->type == T_EOF) break;
-        }*/
-        ExprNode *node = parser->parse();
-        SymbolTable *tbl = lex->getSymTbl();
-        std::cout << "Symbol Table: \n";
-        for(SymbolTable::iterator it = tbl->begin(); it != tbl->end(); it++) {
-            std::cout << it->first << " : " << it->second << std::endl;
+    if(argc > 1) {
+        std::ifstream *ifs = new std::ifstream(argv[1]);
+        if(ifs->bad() || ifs->eof()) {
+            std::cout << argv[1] << std::endl;
+            delete ifs;
+            exit(-1);
         }
-    } catch (LexerException e) {
-        std::cerr << "Lexer error: " << e.msg << std::endl;
-        exit(-1);
+        in = reinterpret_cast<std::istream *>(ifs);
+    } else {
+        in = &(std::cin);
     }
 
-    delete parser;
-    delete lex;
+    Dot *dot = new Dot();
+
+    dot->init();
+
+    ExprNode *node = dot->parse(in);
+    dot->exec(node);
+
+    dot->terminate();
+
+    dot->print_debug_report();
+
+    delete dot;
 }
