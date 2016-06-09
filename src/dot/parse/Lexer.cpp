@@ -58,6 +58,9 @@ Token *Lexer::lex() {
                 case 17:    break;
                 case 18:    return new Token(T_EOF, token_start, 0);
                 case 19:    pos.line(); break;
+                case 20:    return new Token(T_LPARENT, token_start, 0);
+                case 21:    return new Token(T_RPARENT, token_start, 0);
+                case 22:    return new Token(T_COMMA, token_start, 0);
 
                 default: throw LexerException(str);
             }

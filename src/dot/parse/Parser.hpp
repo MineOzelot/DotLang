@@ -41,6 +41,8 @@ class Parser {
 
     ExprNode *parseExpr();
 
+    ExprNode *parseArgList();
+
     ExprNode *error(const char *msg);
 public:
     Parser(Lexer *lex);

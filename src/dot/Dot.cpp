@@ -21,6 +21,7 @@
 #include "Dot.hpp"
 #include "parse/Parser.hpp"
 #include "Exception.hpp"
+#include "type/DotMethod.hpp"
 
 Dot::Dot() {
     symtbl = new SymbolTable();
@@ -33,6 +34,7 @@ void Dot::init() {
     null_value = new DotValue(null_type);
 
     operators.push_back(new AssignOperator(this));
+    operators.push_back(new MethodOperator(this));
 }
 
 ExprNode *Dot::parse(std::istream *in) {
@@ -57,10 +59,7 @@ ExprNode *Dot::parse(std::istream *in) {
 }
 
 DotValue *Dot::exec(ExprNode *node) {
-    ne->start(node);
-    ne->run();
-    ne->terminate();
-    return getNull();
+    return ne->run(node);
 }
 
 DotValue *Dot::getNull() {
@@ -84,6 +83,10 @@ DotVariable *Dot::getVariable(unsigned long sym) {
         variables.insert(std::pair<unsigned long, DotVariable *>(sym, var));
         return var;
     }
+}
+
+DotMethod *Dot::getMethod(unsigned long sym) {
+    return methods[sym];
 }
 
 DotValue *Dot::createString(unsigned long sym) {

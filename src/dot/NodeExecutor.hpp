@@ -24,21 +24,16 @@
 #include "Node.hpp"
 #include "type/DotValue.hpp"
 
-class NodeExecutor {
-    class Dot *dot;
-    ExprNode *node = nullptr;
+class Dot;
 
-    bool isRunning = false;
+class NodeExecutor {
+    Dot *dot;
 
     DotValue *execNode(ExprNode *node);
 public:
-    NodeExecutor(class Dot *dot);
+    NodeExecutor(Dot *dot);
 
-    void start(ExprNode *node);
-
-    void run();
-
-    void terminate();
+    DotValue *run(ExprNode *node);
 };
 
 

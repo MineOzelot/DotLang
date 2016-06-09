@@ -18,9 +18,14 @@
  */
 
 #include "BinaryOperator.hpp"
+#include "../Dot.hpp"
 
 
 DotValue *AssignOperator::exec(ExprNode *node, DotVariable *left, DotValue *right) {
     left->setValue(right);
     return right;
+}
+
+DotValue *MethodOperator::exec(ExprNode *node, unsigned long id, ArgsList *args) {
+    return dot->getMethod(id)->call(args);
 }

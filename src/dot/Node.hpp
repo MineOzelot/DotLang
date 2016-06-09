@@ -27,6 +27,7 @@ enum NodeType {
     NUMBER, STRING,
     VARIABLE,
     BINOPERATOR, UNOPERATOR, ASSIGN,
+    METHOD,
     LIST
 };
 
@@ -73,6 +74,12 @@ struct ListNode: public ExprNode {
     ListNode *prev = nullptr, *next = nullptr;
     ExprNode *val = nullptr;
     NodeType type() { return LIST; }
+};
+struct CallNode: public ExprNode {
+    unsigned long id;
+    ListNode *args;
+    NodeType type() { return METHOD; }
+    CallNode(unsigned long id, ListNode *node): id(id), args(args) {}
 };
 
 

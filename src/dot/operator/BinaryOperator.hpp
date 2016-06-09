@@ -22,12 +22,19 @@
 
 #include "BaseOperator.hpp"
 #include "../type/DotVariable.hpp"
+#include "../ArgsList.hpp"
 
 
 class AssignOperator: public BaseAssignOperator {
 public:
     AssignOperator(Dot *dot): BaseAssignOperator(dot) {}
     DotValue *exec(ExprNode *node, DotVariable *left, DotValue *right);
+};
+
+class MethodOperator: public BaseOperator {
+public:
+    MethodOperator(Dot *dot): BaseOperator(dot) {}
+    DotValue *exec(ExprNode *node, unsigned long id, ArgsList *args);
 };
 
 #endif //DOTLANG_BINARYOPERATOR_HPP

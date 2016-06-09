@@ -37,9 +37,26 @@ ExprNode *Parser::parseIdent() {
             nextToken();
             ExprNode *right = parseExpr();
             return new AssignOpNode(id, left, right);
+        } case T_LPARENT: {
+            nextToken();
+            return new CallNode(tok->symbol_id, (ListNode *) parseArgList());
         } default:
             return new VarExprNode(tok->symbol_id);
     }
+}
+
+ExprNode *Parser::parseArgList() {
+    ListNode *ret = new ListNode();
+    while(curtok->type != T_RPARENT) {
+        ExprNode *node = parseExpr();
+        ListNode *next = new ListNode();
+        ret->val = node;
+        next->prev = ret;
+        ret->next = next;
+        if(nextToken()->type != T_COMMA && curtok->type != T_RPARENT) return error("syntax error");
+    }
+    nextToken();
+    return ret;
 }
 
 ExprNode *Parser::parseExpr() {

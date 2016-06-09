@@ -23,19 +23,9 @@
 
 NodeExecutor::NodeExecutor(Dot *dot): dot(dot) {}
 
-void NodeExecutor::start(ExprNode *node) {
-    this->node = node;
-}
-
-void NodeExecutor::run() {
-    if(!node) return;
-    isRunning = true;
-    execNode(node);
-}
-
-void NodeExecutor::terminate() {
-    isRunning = false;
-    node = nullptr;
+DotValue *NodeExecutor::run(ExprNode *node) {
+    if(!node) return dot->getNull();
+    return execNode(node);
 }
 
 DotValue *NodeExecutor::execNode(ExprNode *node) {
@@ -61,6 +51,10 @@ DotValue *NodeExecutor::execNode(ExprNode *node) {
                 AssignOpNode *cur = (AssignOpNode *) node;
                 AssignOperator *op = (AssignOperator *) dot->getOperator(cur->op);
                 return op->exec(cur, dot->getVariable(cur->left->name), execNode(cur->right));
+            } case NodeType::METHOD: {
+                CallNode *cur = (CallNode *) node;
+                MethodOperator *op = (MethodOperator *) dot->getOperator(1);
+                return op->exec(cur, cur->id, new ArgsList(cur->args));
             } case NodeType::VARIABLE: {
                 VarExprNode *cur = (VarExprNode *) node;
                 return dot->getVariable(cur->name)->getValue();
@@ -72,4 +66,5 @@ DotValue *NodeExecutor::execNode(ExprNode *node) {
                 return dot->createNumber(cur->num);
             }
         }
+    return nullptr;
 }

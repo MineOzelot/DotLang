@@ -28,6 +28,7 @@
 #include "type/DotValue.hpp"
 #include "operator/BaseOperator.hpp"
 #include "operator/BinaryOperator.hpp"
+#include "type/DotMethod.hpp"
 
 class Dot {
     SymbolTable *symtbl;
@@ -36,6 +37,7 @@ class Dot {
     std::vector<BaseOperator *> operators;
 
     std::map<unsigned long, DotVariable *> variables;
+    std::map<unsigned long, DotMethod *> methods;
     std::vector<DotValue *> values;
 
     DotType *null_type;
@@ -57,6 +59,7 @@ public:
     BaseOperator *getOperator(int id);
 
     DotVariable *getVariable(unsigned long sym);
+    DotMethod *getMethod(unsigned long sym);
 
     DotValue *createString(unsigned long sym);
     DotValue *createNumber(unsigned long sym);
