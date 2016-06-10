@@ -25,7 +25,10 @@
 #include <map>
 #include "Token.hpp"
 
-typedef std::map<unsigned long, std::string*> SymbolTable;
+struct SymbolTable {
+    std::map<unsigned long, std::string*> map;
+    unsigned long cur = 1;
+};
 
 class Lexer {
     std::istream *code;
@@ -35,13 +38,13 @@ class Lexer {
     Position pos;
     Position token_start;
 
-    unsigned long cur_id = 1;
     SymbolTable *sym = nullptr;
 
     Token *lex();
     unsigned long addsym();
+
+    Token *lexString();
 public:
-    //void start(char *str, SymbolTable *symtbl);
     void start(std::istream *str, SymbolTable *symtbl);
     Token *nextToken();
 

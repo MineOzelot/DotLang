@@ -33,14 +33,12 @@ enum TokenType {
     T_LAZY_ASSIGN,
     T_EQUAL,
 
-    T_QUOTE,
-
     T_PLUS, T_MINUS,
     T_PLUS_ASSIGN, T_MINUS_ASSIGN,
     T_INCREMENT, T_DECREMENT,
 
     T_LPARENT, T_RPARENT,
-    T_COMMA,
+    T_COMMA, T_STRING,
 
     T_KW_DEF
 };

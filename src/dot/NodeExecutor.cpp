@@ -17,6 +17,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <iostream>
 #include "NodeExecutor.hpp"
 #include "operator/BinaryOperator.hpp"
 #include "Dot.hpp"
@@ -40,10 +41,11 @@ DotValue *NodeExecutor::execNode(ExprNode *node) {
                     cur = cur->next;
                 }
                 return last;
-            } case NodeType::UNOPERATOR:
-                //TODO: Unary operator
-                return nullptr;
-            case NodeType::BINOPERATOR: {
+            } case NodeType::UNOPERATOR: {
+                UnaryOpNode *cur = (UnaryOpNode *) node;
+                UnaryOperator *op = (UnaryOperator *) dot->getOperator(cur->op);
+                return op->exec(cur, execNode(cur->right));
+            } case NodeType::BINOPERATOR: {
                 BinaryOpNode *cur = (BinaryOpNode *) node;
                 BinaryOperator *op = (BinaryOperator *) dot->getOperator(cur->op);
                 return op->exec(cur, execNode(cur->left), execNode(cur->right));
@@ -54,7 +56,14 @@ DotValue *NodeExecutor::execNode(ExprNode *node) {
             } case NodeType::METHOD: {
                 CallNode *cur = (CallNode *) node;
                 MethodOperator *op = (MethodOperator *) dot->getOperator(1);
-                return op->exec(cur, cur->id, new ArgsList(cur->args));
+                lens::TList<DotValue *> *tlist = new lens::TList<DotValue *>();
+                ListNode *args = cur->args;
+                while(args) {
+                    if(!args->val) break;
+                    tlist->push_back(execNode(args->val));
+                    args = args->next;
+                }
+                return op->exec(cur, cur->id, tlist);
             } case NodeType::VARIABLE: {
                 VarExprNode *cur = (VarExprNode *) node;
                 return dot->getVariable(cur->name)->getValue();

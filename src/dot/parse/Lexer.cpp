@@ -54,7 +54,7 @@ Token *Lexer::lex() {
                 case 13:    return new Token(T_MINUS_ASSIGN, token_start, 0);
                 case 14:    return new Token(T_INCREMENT, token_start, 0);
                 case 15:    return new Token(T_DECREMENT, token_start, 0);
-                case 16:    return new Token(T_QUOTE, token_start, 0);
+                case 16:    return lexString();
                 case 17:    break;
                 case 18:    return new Token(T_EOF, token_start, 0);
                 case 19:    pos.line(); break;
@@ -77,14 +77,43 @@ Token *Lexer::lex() {
 }
 
 unsigned long Lexer::addsym() {
-    for(SymbolTable::iterator it = sym->begin(); it != sym->end(); it++)
+    for(std::map<unsigned long, std::string*>::iterator it = sym->map.begin(); it != sym->map.end(); it++)
         if(*(it->second) == str)
             return it->first;
-    unsigned long id = cur_id++;
-    sym->insert(std::pair<unsigned long, std::string*>(id, new std::string(str)));
+    unsigned long id = sym->cur++;
+    sym->map.insert(std::pair<unsigned long, std::string*>(id, new std::string(str)));
     return id;
 }
 
 SymbolTable *Lexer::getSymTbl() {
     return sym;
+}
+
+Token *Lexer::lexString() {
+    str = "";
+    re:
+    while(cur != '"') {
+        if(cur == '\0') {
+            std::stringstream msg;
+            msg << "Unrecognized character: "
+            << cur << "("
+            << (int) cur << ")";
+            throw LexerException(msg.str());
+        }
+        if(cur == '\\') {
+            pos.next();
+            switch(code->get()) {
+                case 'n': cur = '\n'; break;
+                case 't': cur = '\t'; break;
+                case 'r': cur = '\r'; break;
+                default: goto re;
+            }
+        }
+        str += cur;
+        cur = (char) code->get();
+        pos.next();
+    }
+    cur = (char) code->get();
+    pos.next();
+    return new Token(T_STRING, token_start, addsym());
 }

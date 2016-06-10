@@ -22,7 +22,7 @@
 
 #include "BaseOperator.hpp"
 #include "../type/DotVariable.hpp"
-#include "../ArgsList.hpp"
+#include "../../lens/TList.hpp"
 
 
 class AssignOperator: public BaseAssignOperator {
@@ -34,7 +34,7 @@ public:
 class MethodOperator: public BaseOperator {
 public:
     MethodOperator(Dot *dot): BaseOperator(dot) {}
-    DotValue *exec(ExprNode *node, unsigned long id, ArgsList *args);
+    DotValue *exec(ExprNode *node, unsigned long id, lens::TList<DotValue *> *args);
 };
 
 #endif //DOTLANG_BINARYOPERATOR_HPP

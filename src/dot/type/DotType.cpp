@@ -26,5 +26,27 @@ DotValue *DotType::create() {
     return new DotValue(this);
 }
 
+std::string DotType::to_str(DotValue *value) {
+    return "null";
+}
+
+
 DotNumber::DotNumber(): DotType("number") {}
+DotValue *DotNumber::create(std::string str) {
+    DotValue *ret = new DotValue(this);
+    ret->setData(new std::string(str));
+    return ret;
+}
+std::string DotNumber::to_str(DotValue *value) {
+    return std::string(*((std::string *) value->getData()));
+}
+
 DotString::DotString(): DotType("string") {}
+DotValue *DotString::create(std::string str) {
+    DotValue *ret = new DotValue(this);
+    ret->setData(new std::string(str));
+    return ret;
+}
+std::string DotString::to_str(DotValue *value) {
+    return std::string(*(std::string *) value->getData());
+}

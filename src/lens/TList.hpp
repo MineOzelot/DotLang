@@ -117,6 +117,10 @@ namespace lens {
             delete head;
             head = current = end = nullptr;
         }
+
+        ~TList() {
+            clear();
+        }
     };
 
 }

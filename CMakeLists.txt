@@ -22,7 +22,7 @@ set(SOURCE_FILES
         src/dot/type/DotVariable.cpp src/dot/type/DotVariable.hpp
         src/dot/type/DotType.cpp src/dot/type/DotType.hpp
         src/dot/type/DotMethod.cpp src/dot/type/DotMethod.hpp
-        src/dot/ArgsList.cpp src/dot/ArgsList.hpp)
+        )
 
 
 add_executable(DotLang ${SOURCE_FILES})

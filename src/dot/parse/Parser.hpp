@@ -38,10 +38,11 @@ class Parser {
 
     ExprNode *parseIdent();
     ExprNode *parseNumber();
+    ExprNode *parseString();
 
     ExprNode *parseExpr();
 
-    ExprNode *parseArgList();
+    ListNode *parseArgList();
 
     ExprNode *error(const char *msg);
 public:

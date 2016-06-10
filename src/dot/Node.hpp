@@ -79,7 +79,7 @@ struct CallNode: public ExprNode {
     unsigned long id;
     ListNode *args;
     NodeType type() { return METHOD; }
-    CallNode(unsigned long id, ListNode *node): id(id), args(args) {}
+    CallNode(unsigned long id, ListNode *node): id(id), args(node) {}
 };
 
 

@@ -21,7 +21,6 @@
 #include "Dot.hpp"
 #include "parse/Parser.hpp"
 #include "Exception.hpp"
-#include "type/DotMethod.hpp"
 
 Dot::Dot() {
     symtbl = new SymbolTable();
@@ -30,11 +29,17 @@ Dot::Dot() {
 
 void Dot::init() {
     null_type = new DotType("null");
+    string_type = new DotString();
+    number_type = new DotNumber();
 
     null_value = new DotValue(null_type);
 
     operators.push_back(new AssignOperator(this));
     operators.push_back(new MethodOperator(this));
+
+    unsigned long cur = symtbl->cur++;
+    symtbl->map.insert(std::pair<unsigned long, std::string *>(cur, new std::string("println")));
+    methods.insert(std::pair<unsigned long, DotMethod *>(cur, new DotPrintLnMethod(this)));
 }
 
 ExprNode *Dot::parse(std::istream *in) {
@@ -90,20 +95,37 @@ DotMethod *Dot::getMethod(unsigned long sym) {
 }
 
 DotValue *Dot::createString(unsigned long sym) {
-    return string_type->create(/*TODO: (*symtbl)[sym]*/);
+    return string_type->create(*symtbl->map[sym]);
 }
 
 DotValue *Dot::createNumber(unsigned long sym) {
-    return number_type->create(/*TODO: (*symtbl)[sym]*/);
+    return number_type->create(*symtbl->map[sym]);
 }
 
 void Dot::print_debug_report() {
     std::cout
-    << "Debug report:\n"
-    << "Variables:\n";
+    << "Debug report:\n";
+    for(std::map<unsigned long, std::string *>::iterator it = symtbl->map.begin();
+        it != symtbl->map.end(); it++) {
+        std::cout << "Sym " << it->first << " - " << *it->second << '\n';
+    }
+    std::cout << "Variables:\n";
     for(std::map<unsigned long, DotVariable *>::iterator it = variables.begin();
         it != variables.end(); it++) {
-        std::cout << "Var " << *(*symtbl)[it->first] << '\n';
+        std::cout << "Var " << *symtbl->map[it->first] << '\n';
+    }
+    std::cout << "Methods:\n";
+    for(std::map<unsigned long, DotMethod *>::iterator it = methods.begin();
+        it != methods.end(); it++) {
+        std::cout << "Method " << *symtbl->map[it->first] << '\n';
     }
     std::cout << std::endl;
+}
+
+void Dot::defineVariable(unsigned long sym, DotVariable *var) {
+    variables.insert(std::pair<unsigned long, DotVariable *>(sym, var));
+}
+
+void Dot::defineMethod(unsigned long sym, DotMethod *met) {
+    methods.insert(std::pair<unsigned long, DotMethod *>(sym, met));
 }

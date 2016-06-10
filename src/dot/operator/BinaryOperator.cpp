@@ -26,6 +26,6 @@ DotValue *AssignOperator::exec(ExprNode *node, DotVariable *left, DotValue *righ
     return right;
 }
 
-DotValue *MethodOperator::exec(ExprNode *node, unsigned long id, ArgsList *args) {
+DotValue *MethodOperator::exec(ExprNode *node, unsigned long id, lens::TList<DotValue *> *args) {
     return dot->getMethod(id)->call(args);
 }

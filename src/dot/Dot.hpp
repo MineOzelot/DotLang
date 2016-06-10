@@ -58,6 +58,9 @@ public:
     DotValue *getNull();
     BaseOperator *getOperator(int id);
 
+    void defineVariable(unsigned long sym, DotVariable *var);
+    void defineMethod(unsigned long sym, DotMethod *met);
+
     DotVariable *getVariable(unsigned long sym);
     DotMethod *getMethod(unsigned long sym);
 

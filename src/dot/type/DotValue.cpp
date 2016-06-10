@@ -19,7 +19,16 @@
 
 #include "DotValue.hpp"
 
-DotValue::DotValue(DotType *type): type(type) {
+DotValue::DotValue(DotType *type): type(type) {}
 
+std::string DotValue::to_str() {
+    return type->to_str(this);
 }
 
+void DotValue::setData(void *data) {
+    this->data = data;
+}
+
+void *DotValue::getData() {
+    return data;
+}

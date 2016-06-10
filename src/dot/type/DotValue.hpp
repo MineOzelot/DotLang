@@ -25,8 +25,12 @@
 
 class DotValue {
     DotType *type;
+    void *data;
 public:
     DotValue(DotType *type);
+    std::string to_str();
+    void setData(void *data);
+    void *getData();
 };
 
 

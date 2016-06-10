@@ -30,19 +30,25 @@ class DotType {
 public:
     DotType(const std::string &name);
 
-    DotValue *create();
+    virtual DotValue *create();
 
     virtual ~DotType() {}
+
+    virtual std::string to_str(DotValue *value);
 };
 
 class DotNumber: public DotType {
 public:
     DotNumber();
+    DotValue *create(std::string str);
+    std::string to_str(DotValue *value);
 };
 
 class DotString: public DotType {
 public:
     DotString();
+    DotValue *create(std::string str);
+    std::string to_str(DotValue *value);
 };
 
 

@@ -39,21 +39,23 @@ ExprNode *Parser::parseIdent() {
             return new AssignOpNode(id, left, right);
         } case T_LPARENT: {
             nextToken();
-            return new CallNode(tok->symbol_id, (ListNode *) parseArgList());
+            return new CallNode(tok->symbol_id, parseArgList());
         } default:
             return new VarExprNode(tok->symbol_id);
     }
 }
 
-ExprNode *Parser::parseArgList() {
+ListNode *Parser::parseArgList() {
     ListNode *ret = new ListNode();
+    ListNode *cur = ret;
     while(curtok->type != T_RPARENT) {
         ExprNode *node = parseExpr();
         ListNode *next = new ListNode();
-        ret->val = node;
-        next->prev = ret;
-        ret->next = next;
-        if(nextToken()->type != T_COMMA && curtok->type != T_RPARENT) return error("syntax error");
+        cur->val = node;
+        next->prev = cur;
+        cur->next = next;
+        cur = next;
+        if(curtok->type != T_COMMA && curtok->type != T_RPARENT) return (ListNode *) error("syntax error");
     }
     nextToken();
     return ret;
@@ -63,6 +65,7 @@ ExprNode *Parser::parseExpr() {
     switch (curtok->type) {
         case T_IDENT: return parseIdent();
         case T_NUMBER: return parseNumber();
+        case T_STRING: return parseString();
         default: return error("syntax error");
     }
 }
@@ -72,3 +75,10 @@ ExprNode *Parser::parseNumber() {
     nextToken();
     return node;
 }
+
+ExprNode *Parser::parseString() {
+    ExprNode *node = new StringExprNode(curtok->symbol_id);
+    nextToken();
+    return node;
+}
+
