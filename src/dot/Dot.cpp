@@ -28,11 +28,11 @@ Dot::Dot() {
 }
 
 void Dot::init() {
-    null_type = new DotType("null");
-    string_type = new DotString();
-    number_type = new DotNumber();
+    null_type = new DotType(this, "null");
+    string_type = new DotString(this);
+    number_type = new DotNumber(this);
 
-    null_value = new DotValue(null_type);
+    null_value = new DotValue(this, null_type);
 
     operators.push_back(new AssignOperator(this));
     operators.push_back(new MethodOperator(this));
@@ -128,4 +128,17 @@ void Dot::defineVariable(unsigned long sym, DotVariable *var) {
 
 void Dot::defineMethod(unsigned long sym, DotMethod *met) {
     methods.insert(std::pair<unsigned long, DotMethod *>(sym, met));
+}
+
+void Dot::defineValue(DotValue *value) {
+    values.push_back(value);
+}
+
+unsigned long Dot::defineSymbol(std::string str) {
+    for(std::map<unsigned long, std::string*>::iterator it = symtbl->map.begin(); it != symtbl->map.end(); it++)
+        if(*(it->second) == str)
+            return it->first;
+    unsigned long id = symtbl->cur++;
+    symtbl->map.insert(std::pair<unsigned long, std::string*>(id, new std::string(str)));
+    return id;
 }

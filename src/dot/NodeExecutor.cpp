@@ -36,7 +36,6 @@ DotValue *NodeExecutor::execNode(ExprNode *node) {
                 DotValue *last = nullptr;
                 while (cur) {
                     if(!cur->val) break;
-                    if (last) delete last;
                     last = execNode(cur->val);
                     cur = cur->next;
                 }

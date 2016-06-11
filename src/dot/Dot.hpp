@@ -58,13 +58,17 @@ public:
     DotValue *getNull();
     BaseOperator *getOperator(int id);
 
+    unsigned long defineSymbol(std::string str);
+
     void defineVariable(unsigned long sym, DotVariable *var);
+    void defineValue(DotValue *value);
     void defineMethod(unsigned long sym, DotMethod *met);
 
     DotVariable *getVariable(unsigned long sym);
-    DotMethod *getMethod(unsigned long sym);
 
+    DotMethod *getMethod(unsigned long sym);
     DotValue *createString(unsigned long sym);
+
     DotValue *createNumber(unsigned long sym);
 };
 

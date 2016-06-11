@@ -19,11 +19,12 @@
 
 #include "DotType.hpp"
 #include "DotValue.hpp"
+#include "../Dot.hpp"
 
-DotType::DotType(const std::string &name): name(name) {}
+DotType::DotType(Dot *dot, const std::string &name): dot(dot), name(name) {}
 
 DotValue *DotType::create() {
-    return new DotValue(this);
+    return new DotValue(dot, this);
 }
 
 std::string DotType::to_str(DotValue *value) {
@@ -31,9 +32,9 @@ std::string DotType::to_str(DotValue *value) {
 }
 
 
-DotNumber::DotNumber(): DotType("number") {}
+DotNumber::DotNumber(Dot *dot): DotType(dot, "number") {}
 DotValue *DotNumber::create(std::string str) {
-    DotValue *ret = new DotValue(this);
+    DotValue *ret = new DotValue(dot, this);
     ret->setData(new std::string(str));
     return ret;
 }
@@ -41,9 +42,9 @@ std::string DotNumber::to_str(DotValue *value) {
     return std::string(*((std::string *) value->getData()));
 }
 
-DotString::DotString(): DotType("string") {}
+DotString::DotString(Dot *dot): DotType(dot, "string") {}
 DotValue *DotString::create(std::string str) {
-    DotValue *ret = new DotValue(this);
+    DotValue *ret = new DotValue(dot, this);
     ret->setData(new std::string(str));
     return ret;
 }

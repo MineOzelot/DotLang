@@ -18,8 +18,11 @@
  */
 
 #include "DotValue.hpp"
+#include "../Dot.hpp"
 
-DotValue::DotValue(DotType *type): type(type) {}
+DotValue::DotValue(Dot *dot, DotType *type): type(type) {
+    dot->defineValue(this);
+}
 
 std::string DotValue::to_str() {
     return type->to_str(this);

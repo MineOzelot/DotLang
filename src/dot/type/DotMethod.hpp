@@ -1,7 +1,7 @@
 /*  DotLang - The Dot Interpreter
  *  Copyright (C) 2016 MineOzelot
  *
- *  DotType.hpp
+ *  DotMethod.hpp
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -17,42 +17,28 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef DOTLANG_DOTTYPE_HPP
-#define DOTLANG_DOTTYPE_HPP
+#ifndef DOTLANG_DOTMETHOD_HPP
+#define DOTLANG_DOTMETHOD_HPP
 
 
-#include <string>
+#include "DotValue.hpp"
+#include "../../lens/TList.hpp"
 
 class Dot;
-class DotValue;
 
-class DotType {
+class DotMethod {
 protected:
-    std::string name;
     Dot *dot;
 public:
-    DotType(Dot *dot, const std::string &name);
-
-    virtual DotValue *create();
-
-    virtual ~DotType() {}
-
-    virtual std::string to_str(DotValue *value);
+    DotMethod(Dot *dot): dot(dot) {}
+    virtual DotValue *call(lens::TList<DotValue *> *args);
 };
 
-class DotNumber: public DotType {
+class DotPrintLnMethod: public DotMethod {
 public:
-    DotNumber(Dot *dot);
-    DotValue *create(std::string str);
-    std::string to_str(DotValue *value);
-};
-
-class DotString: public DotType {
-public:
-    DotString(Dot *dot);
-    DotValue *create(std::string str);
-    std::string to_str(DotValue *value);
+    DotPrintLnMethod(Dot *dot): DotMethod(dot) {}
+    DotValue *call(lens::TList<DotValue *> *args);
 };
 
 
-#endif //DOTLANG_DOTTYPE_HPP
+#endif //DOTLANG_DOTMETHOD_HPP
