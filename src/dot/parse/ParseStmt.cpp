@@ -40,6 +40,13 @@ ExprNode *Parser::parseIdent() {
         } case T_LPARENT: {
             nextToken();
             return new CallNode(tok->symbol_id, parseArgList());
+        } case T_PLUS:
+        case T_MINUS: {
+            int id;
+            if(curtok->type == T_PLUS) id = 2; else id = 3;
+            VarExprNode *left = new VarExprNode(tok->symbol_id);
+            nextToken();
+            return new BinaryOpNode(id, left, parseExpr());
         } default:
             return new VarExprNode(tok->symbol_id);
     }
@@ -71,14 +78,32 @@ ExprNode *Parser::parseExpr() {
 }
 
 ExprNode *Parser::parseNumber() {
-    ExprNode *node = new NumberExprNode(curtok->symbol_id);
-    nextToken();
-    return node;
+    Token *tok = curtok;
+    switch(nextToken()->type) {
+        case T_PLUS:
+        case T_MINUS: {
+            int id;
+            if(curtok->type == T_PLUS) id = 2; else id = 3;
+            NumberExprNode *left = new NumberExprNode(tok->symbol_id);
+            nextToken();
+            return new BinaryOpNode(id, left, parseExpr());
+        } default:
+            return new NumberExprNode(tok->symbol_id);
+    }
 }
 
 ExprNode *Parser::parseString() {
-    ExprNode *node = new StringExprNode(curtok->symbol_id);
-    nextToken();
-    return node;
+    Token *tok = curtok;
+    switch(nextToken()->type) {
+        case T_PLUS:
+        case T_MINUS: {
+            int id;
+            if(curtok->type == T_PLUS) id = 2; else id = 3;
+            StringExprNode *left = new StringExprNode(tok->symbol_id);
+            nextToken();
+            return new BinaryOpNode(id, left, parseExpr());
+        } default:
+            return new StringExprNode(tok->symbol_id);
+    }
 }
 

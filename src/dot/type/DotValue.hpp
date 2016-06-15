@@ -33,6 +33,7 @@ public:
     std::string to_str();
     void setData(void *data);
     void *getData();
+    DotType *getType();
 };
 
 

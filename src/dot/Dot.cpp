@@ -18,6 +18,7 @@
  */
 
 #include <iostream>
+#include <string>
 #include "Dot.hpp"
 #include "parse/Parser.hpp"
 #include "Exception.hpp"
@@ -34,8 +35,11 @@ void Dot::init() {
 
     null_value = new DotValue(this, null_type);
 
-    operators.push_back(new AssignOperator(this));
-    operators.push_back(new MethodOperator(this));
+    operators.push_back(new AssignOperator(this)); //0
+    operators.push_back(new MethodOperator(this)); //1
+    operators.push_back(new AddOperator(this)); //2
+    operators.push_back(new SubOperator(this)); //3
+
 
     unsigned long cur = symtbl->cur++;
     symtbl->map.insert(std::pair<unsigned long, std::string *>(cur, new std::string("println")));
@@ -99,7 +103,7 @@ DotValue *Dot::createString(unsigned long sym) {
 }
 
 DotValue *Dot::createNumber(unsigned long sym) {
-    return number_type->create(*symtbl->map[sym]);
+    return number_type->create(std::stol(*symtbl->map[sym]));
 }
 
 void Dot::print_debug_report() {

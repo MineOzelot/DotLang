@@ -18,7 +18,6 @@
  */
 
 #include "DotType.hpp"
-#include "DotValue.hpp"
 #include "../Dot.hpp"
 
 DotType::DotType(Dot *dot, const std::string &name): dot(dot), name(name) {}
@@ -31,16 +30,41 @@ std::string DotType::to_str(DotValue *value) {
     return "null";
 }
 
+DotValue *DotType::add(DotValue *num1, DotValue *num2) {
+    return dot->getNull(); //TODO: throw RuntimeException
+}
+
+DotValue *DotType::sub(DotValue *num1, DotValue *num2) {
+    return dot->getNull(); //TODO: throw RuntimeException
+}
+
 
 DotNumber::DotNumber(Dot *dot): DotType(dot, "number") {}
-DotValue *DotNumber::create(std::string str) {
+DotValue *DotNumber::create(long num) {
     DotValue *ret = new DotValue(dot, this);
-    ret->setData(new std::string(str));
+    ret->setData(new long(num));
     return ret;
 }
 std::string DotNumber::to_str(DotValue *value) {
-    return std::string(*((std::string *) value->getData()));
+    std::stringstream str;
+    str << *(reinterpret_cast<long *>(value->getData()));
+    return str.str();
 }
+
+DotValue *DotNumber::add(DotValue *num1, DotValue *num2) {
+    long *val1 = reinterpret_cast<long *>(num1->getData());
+    long *val2 = reinterpret_cast<long *>(num2->getData());
+    long res = *val1 + *val2;
+    return create(res);
+}
+
+DotValue *DotNumber::sub(DotValue *num1, DotValue *num2) {
+    long *val1 = reinterpret_cast<long *>(num1->getData());
+    long *val2 = reinterpret_cast<long *>(num2->getData());
+    long res = *val1 - *val2;
+    return create(res);
+}
+
 
 DotString::DotString(Dot *dot): DotType(dot, "string") {}
 DotValue *DotString::create(std::string str) {
@@ -50,4 +74,15 @@ DotValue *DotString::create(std::string str) {
 }
 std::string DotString::to_str(DotValue *value) {
     return std::string(*(std::string *) value->getData());
+}
+
+DotValue *DotString::add(DotValue *str1, DotValue *str2) {
+    std::string *val1 = reinterpret_cast<std::string *>(str1->getData());
+    std::string *val2 = reinterpret_cast<std::string *>(str2->getData());
+    std::string res = *val1 + *val2;
+    return create(res);
+}
+
+DotValue *DotString::sub(DotValue *str1, DotValue *str2) {
+    return dot->getNull();
 }

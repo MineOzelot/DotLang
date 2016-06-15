@@ -29,3 +29,11 @@ DotValue *AssignOperator::exec(ExprNode *node, DotVariable *left, DotValue *righ
 DotValue *MethodOperator::exec(ExprNode *node, unsigned long id, lens::TList<DotValue *> *args) {
     return dot->getMethod(id)->call(args);
 }
+
+DotValue *AddOperator::exec(ExprNode *node, DotValue *left, DotValue *right) {
+    return left->getType()->add(left, right);
+}
+
+DotValue *SubOperator::exec(ExprNode *node, DotValue *left, DotValue *right) {
+    return left->getType()->sub(left, right);
+}

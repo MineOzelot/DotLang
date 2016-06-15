@@ -37,4 +37,16 @@ public:
     DotValue *exec(ExprNode *node, unsigned long id, lens::TList<DotValue *> *args);
 };
 
+class AddOperator: public BinaryOperator {
+public:
+    AddOperator(Dot *dot): BinaryOperator(dot) {}
+    DotValue *exec(ExprNode *node, DotValue *left, DotValue *right);
+};
+
+class SubOperator: public BinaryOperator {
+public:
+    SubOperator(Dot *dot): BinaryOperator(dot) {}
+    DotValue *exec(ExprNode *node, DotValue *left, DotValue *right);
+};
+
 #endif //DOTLANG_BINARYOPERATOR_HPP
