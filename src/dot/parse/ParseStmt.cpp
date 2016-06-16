@@ -55,14 +55,16 @@ ExprNode *Parser::parseIdent() {
 ListNode *Parser::parseArgList() {
     ListNode *ret = new ListNode();
     ListNode *cur = ret;
-    while(curtok->type != T_RPARENT) {
+    while(true) {
         ExprNode *node = parseExpr();
         ListNode *next = new ListNode();
         cur->val = node;
         next->prev = cur;
         cur->next = next;
         cur = next;
-        if(curtok->type != T_COMMA && curtok->type != T_RPARENT) return (ListNode *) error("syntax error");
+        if(curtok->type == T_COMMA) { nextToken(); continue; }
+        if(curtok->type == T_RPARENT) break;
+        else return (ListNode *) error("syntax error");
     }
     nextToken();
     return ret;

@@ -68,10 +68,10 @@ DotValue *NodeExecutor::execNode(ExprNode *node) {
                 return dot->getVariable(cur->name)->getValue();
             } case NodeType::STRING: {
                 StringExprNode *cur = (StringExprNode *) node;
-                return dot->createString(cur->str);
+                return dot->createString(dot->getSymbol(cur->str));
             } case NodeType::NUMBER: {
                 NumberExprNode *cur = (NumberExprNode *) node;
-                return dot->createNumber(cur->num);
+                return dot->createNumber(std::stol(dot->getSymbol(cur->num)));
             }
         }
     return nullptr;

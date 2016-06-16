@@ -98,12 +98,12 @@ DotMethod *Dot::getMethod(unsigned long sym) {
     return methods[sym];
 }
 
-DotValue *Dot::createString(unsigned long sym) {
-    return string_type->create(*symtbl->map[sym]);
+DotValue *Dot::createString(std::string str) {
+    return string_type->create(str);
 }
 
-DotValue *Dot::createNumber(unsigned long sym) {
-    return number_type->create(std::stol(*symtbl->map[sym]));
+DotValue *Dot::createNumber(long num) {
+    return number_type->create(num);
 }
 
 void Dot::print_debug_report() {
@@ -145,4 +145,8 @@ unsigned long Dot::defineSymbol(std::string str) {
     unsigned long id = symtbl->cur++;
     symtbl->map.insert(std::pair<unsigned long, std::string*>(id, new std::string(str)));
     return id;
+}
+
+std::string Dot::getSymbol(unsigned long sym) {
+    return *symtbl->map[sym];
 }

@@ -27,7 +27,7 @@ DotValue *DotMethod::call(lens::TList<DotValue *> *args) {
 
 DotValue *DotPrintLnMethod::call(lens::TList<DotValue *> *args) {
     if(args->get())
-        std::cout << args->get()->to_str();
+        std::cout << *reinterpret_cast<std::string *>(args->get()->getType()->to_str(args->get())->getData());
     std::cout << std::endl;
     return dot->getNull();
 }

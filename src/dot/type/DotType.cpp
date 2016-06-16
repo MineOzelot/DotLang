@@ -26,10 +26,6 @@ DotValue *DotType::create() {
     return new DotValue(dot, this);
 }
 
-std::string DotType::to_str(DotValue *value) {
-    return "null";
-}
-
 DotValue *DotType::add(DotValue *num1, DotValue *num2) {
     return dot->getNull(); //TODO: throw RuntimeException
 }
@@ -38,17 +34,23 @@ DotValue *DotType::sub(DotValue *num1, DotValue *num2) {
     return dot->getNull(); //TODO: throw RuntimeException
 }
 
+DotValue *DotType::mul(DotValue *num1, DotValue *num2) {
+    return dot->getNull();
+}
+DotValue *DotType::div(DotValue *num1, DotValue *num2) {
+    return dot->getNull();
+}
+
+DotValue *DotType::to_str(DotValue *val) {
+    return dot->createString("");
+}
+
 
 DotNumber::DotNumber(Dot *dot): DotType(dot, "number") {}
 DotValue *DotNumber::create(long num) {
     DotValue *ret = new DotValue(dot, this);
     ret->setData(new long(num));
     return ret;
-}
-std::string DotNumber::to_str(DotValue *value) {
-    std::stringstream str;
-    str << *(reinterpret_cast<long *>(value->getData()));
-    return str.str();
 }
 
 DotValue *DotNumber::add(DotValue *num1, DotValue *num2) {
@@ -65,6 +67,27 @@ DotValue *DotNumber::sub(DotValue *num1, DotValue *num2) {
     return create(res);
 }
 
+DotValue *DotNumber::mul(DotValue *num1, DotValue *num2) {
+    long *val1 = reinterpret_cast<long *>(num1->getData());
+    long *val2 = reinterpret_cast<long *>(num2->getData());
+    long res = *val1 * *val2;
+    return create(res);
+}
+
+DotValue *DotNumber::div(DotValue *num1, DotValue *num2) {
+    long *val1 = reinterpret_cast<long *>(num1->getData());
+    long *val2 = reinterpret_cast<long *>(num2->getData());
+    long res = *val1 / *val2; //TODO: if(*val2 == 0) throw RuntimeException
+    return create(res);
+}
+
+DotValue *DotNumber::to_str(DotValue *val) {
+    long *num = reinterpret_cast<long *>(val->getData());
+    std::stringstream str;
+    str << *num;
+    return dot->createString(str.str());
+}
+
 
 DotString::DotString(Dot *dot): DotType(dot, "string") {}
 DotValue *DotString::create(std::string str) {
@@ -72,17 +95,14 @@ DotValue *DotString::create(std::string str) {
     ret->setData(new std::string(str));
     return ret;
 }
-std::string DotString::to_str(DotValue *value) {
-    return std::string(*(std::string *) value->getData());
-}
 
 DotValue *DotString::add(DotValue *str1, DotValue *str2) {
     std::string *val1 = reinterpret_cast<std::string *>(str1->getData());
-    std::string *val2 = reinterpret_cast<std::string *>(str2->getData());
+    std::string *val2 = reinterpret_cast<std::string *>(str2->getType()->to_str(str2)->getData());
     std::string res = *val1 + *val2;
     return create(res);
 }
 
-DotValue *DotString::sub(DotValue *str1, DotValue *str2) {
-    return dot->getNull();
+DotValue *DotString::to_str(DotValue *val) {
+    return val;
 }

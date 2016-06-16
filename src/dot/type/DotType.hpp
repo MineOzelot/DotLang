@@ -37,10 +37,12 @@ public:
 
     virtual DotValue *add(DotValue *num1, DotValue *num2);
     virtual DotValue *sub(DotValue *num1, DotValue *num2);
+    virtual DotValue *mul(DotValue *num1, DotValue *num2);
+    virtual DotValue *div(DotValue *num1, DotValue *num2);
+
+    virtual DotValue *to_str(DotValue *val);
 
     virtual ~DotType() {}
-
-    virtual std::string to_str(DotValue *value);
 };
 
 class DotNumber: public DotType {
@@ -49,7 +51,10 @@ public:
     DotValue *create(long num);
     DotValue *add(DotValue *num1, DotValue *num2);
     DotValue *sub(DotValue *num1, DotValue *num2);
-    std::string to_str(DotValue *value);
+    DotValue *mul(DotValue *num1, DotValue *num2);
+    DotValue *div(DotValue *num1, DotValue *num2);
+
+    DotValue *to_str(DotValue *val);
 };
 
 class DotString: public DotType {
@@ -57,8 +62,8 @@ public:
     DotString(Dot *dot);
     DotValue *create(std::string str);
     DotValue *add(DotValue *str1, DotValue *str2);
-    DotValue *sub(DotValue *str1, DotValue *str2);
-    std::string to_str(DotValue *value);
+
+    DotValue *to_str(DotValue *val);
 };
 
 

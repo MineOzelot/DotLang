@@ -24,10 +24,6 @@ DotValue::DotValue(Dot *dot, DotType *type): type(type) {
     dot->defineValue(this);
 }
 
-std::string DotValue::to_str() {
-    return type->to_str(this);
-}
-
 void DotValue::setData(void *data) {
     this->data = data;
 }

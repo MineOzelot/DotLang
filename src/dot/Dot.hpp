@@ -59,6 +59,7 @@ public:
     BaseOperator *getOperator(int id);
 
     unsigned long defineSymbol(std::string str);
+    std::string getSymbol(unsigned long sym);
 
     void defineVariable(unsigned long sym, DotVariable *var);
     void defineValue(DotValue *value);
@@ -67,9 +68,9 @@ public:
     DotVariable *getVariable(unsigned long sym);
 
     DotMethod *getMethod(unsigned long sym);
-    DotValue *createString(unsigned long sym);
 
-    DotValue *createNumber(unsigned long sym);
+    DotValue *createString(std::string str);
+    DotValue *createNumber(long num);
 };
 
 

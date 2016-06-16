@@ -30,7 +30,6 @@ class DotValue {
     void *data;
 public:
     DotValue(Dot *dot, DotType *type);
-    std::string to_str();
     void setData(void *data);
     void *getData();
     DotType *getType();
