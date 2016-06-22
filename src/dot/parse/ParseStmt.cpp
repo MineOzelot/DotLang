@@ -1,3 +1,6 @@
+#include "Parser.hpp"
+
+
 /*  DotLang - The Dot Interpreter
  *  Copyright (C) 2016 MineOzelot
  *
@@ -17,8 +20,6 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "Parser.hpp"
-
 ExprNode *Parser::parseStmt() {
     switch (curtok->type) {
         case T_IDENT: return parseIdent();
@@ -31,8 +32,7 @@ ExprNode *Parser::parseIdent() {
     switch (nextToken()->type) {
         case T_ASSIGN:
         case T_LAZY_ASSIGN: {
-            int id;
-            if (curtok->type == T_LAZY_ASSIGN) id = 1; else id = 0;
+            int id = getTokenOperatorId(curtok->type);
             VarExprNode *left = new VarExprNode(tok->symbol_id);
             nextToken();
             ExprNode *right = parseExpr();
@@ -40,14 +40,13 @@ ExprNode *Parser::parseIdent() {
         } case T_LPARENT: {
             nextToken();
             return new CallNode(tok->symbol_id, parseArgList());
-        } case T_PLUS:
-        case T_MINUS: {
-            int id;
-            if(curtok->type == T_PLUS) id = 2; else id = 3;
-            VarExprNode *left = new VarExprNode(tok->symbol_id);
-            nextToken();
-            return new BinaryOpNode(id, left, parseExpr());
         } default:
+            if(isOperator(curtok->type)) {
+                int id = getTokenOperatorId(curtok->type);
+                VarExprNode *left = new VarExprNode(tok->symbol_id);
+                nextToken();
+                return new BinaryOpNode(id, left, parseExpr());
+            }
             return new VarExprNode(tok->symbol_id);
     }
 }
@@ -79,33 +78,25 @@ ExprNode *Parser::parseExpr() {
     }
 }
 
+
 ExprNode *Parser::parseNumber() {
     Token *tok = curtok;
-    switch(nextToken()->type) {
-        case T_PLUS:
-        case T_MINUS: {
-            int id;
-            if(curtok->type == T_PLUS) id = 2; else id = 3;
-            NumberExprNode *left = new NumberExprNode(tok->symbol_id);
-            nextToken();
-            return new BinaryOpNode(id, left, parseExpr());
-        } default:
-            return new NumberExprNode(tok->symbol_id);
+    if(isOperator(nextToken()->type)) {
+        int id = getTokenOperatorId(curtok->type);
+        NumberExprNode *left = new NumberExprNode(tok->symbol_id);
+        nextToken();
+        return new BinaryOpNode(id, left, parseExpr());
     }
+    return new NumberExprNode(tok->symbol_id);
 }
 
 ExprNode *Parser::parseString() {
     Token *tok = curtok;
-    switch(nextToken()->type) {
-        case T_PLUS:
-        case T_MINUS: {
-            int id;
-            if(curtok->type == T_PLUS) id = 2; else id = 3;
-            StringExprNode *left = new StringExprNode(tok->symbol_id);
-            nextToken();
-            return new BinaryOpNode(id, left, parseExpr());
-        } default:
-            return new StringExprNode(tok->symbol_id);
+    if(isOperator(nextToken()->type)) {
+        int id = getTokenOperatorId(curtok->type);
+        StringExprNode *left = new StringExprNode(tok->symbol_id);
+        nextToken();
+        return new BinaryOpNode(id, left, parseExpr());
     }
+    return new StringExprNode(tok->symbol_id);
 }
-

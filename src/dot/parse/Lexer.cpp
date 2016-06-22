@@ -17,6 +17,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <iostream>
 #include "Lexer.hpp"
 #include "lex_table.hpp"
 
@@ -36,7 +37,7 @@ Token *Lexer::lex() {
     str = "";
     while(true) {
         int id = getid(cur);
-        int nid = state_table[state][id];
+        int nid = lex_table[state][id];
         if(nid == 0) {
             switch (state) {
                 case 1:     return new Token(T_COLON, token_start, 0);
@@ -61,6 +62,8 @@ Token *Lexer::lex() {
                 case 20:    return new Token(T_LPARENT, token_start, 0);
                 case 21:    return new Token(T_RPARENT, token_start, 0);
                 case 22:    return new Token(T_COMMA, token_start, 0);
+                case 23:    return new Token(T_MUL, token_start, 0);
+                case 24:    return new Token(T_DIV, token_start, 0);
 
                 default: throw LexerException(str);
             }

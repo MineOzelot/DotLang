@@ -32,7 +32,7 @@ int main(int argc, char *argv[]) {
             delete ifs;
             exit(-1);
         }
-        in = reinterpret_cast<std::istream *>(ifs);
+        in = ifs;
     } else {
         in = &(std::cin);
     }

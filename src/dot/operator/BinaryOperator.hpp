@@ -49,4 +49,16 @@ public:
     DotValue *exec(ExprNode *node, DotValue *left, DotValue *right);
 };
 
+class MulOperator: public BinaryOperator {
+public:
+    MulOperator(Dot *dot): BinaryOperator(dot) {}
+    DotValue *exec(ExprNode *node, DotValue *left, DotValue *right);
+};
+
+class DivOperator: public BinaryOperator {
+public:
+    DivOperator(Dot *dot): BinaryOperator(dot) {}
+    DotValue *exec(ExprNode *node, DotValue *left, DotValue *right);
+};
+
 #endif //DOTLANG_BINARYOPERATOR_HPP

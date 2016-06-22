@@ -34,6 +34,7 @@ enum TokenType {
     T_EQUAL,
 
     T_PLUS, T_MINUS,
+    T_MUL, T_DIV,
     T_PLUS_ASSIGN, T_MINUS_ASSIGN,
     T_INCREMENT, T_DECREMENT,
 

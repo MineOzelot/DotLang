@@ -31,6 +31,9 @@ class Parser {
     Token *curtok;
     lens::TList<Token *> tokens;
 
+    bool isOperator(TokenType t);
+    int getTokenOperatorId(TokenType t);
+
     Token *nextToken();
     Token *prevToken();
 

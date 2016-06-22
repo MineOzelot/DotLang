@@ -30,10 +30,18 @@ DotValue *MethodOperator::exec(ExprNode *node, unsigned long id, lens::TList<Dot
     return dot->getMethod(id)->call(args);
 }
 
-DotValue *AddOperator::exec(ExprNode *node, DotValue *left, DotValue *right) {
+inline DotValue *AddOperator::exec(ExprNode *node, DotValue *left, DotValue *right) {
     return left->getType()->add(left, right);
 }
 
-DotValue *SubOperator::exec(ExprNode *node, DotValue *left, DotValue *right) {
+inline DotValue *SubOperator::exec(ExprNode *node, DotValue *left, DotValue *right) {
     return left->getType()->sub(left, right);
+}
+
+inline DotValue *MulOperator::exec(ExprNode *node, DotValue *left, DotValue *right) {
+    return left->getType()->mul(left, right);
+}
+
+inline DotValue *DivOperator::exec(ExprNode *node, DotValue *left, DotValue *right) {
+    return left->getType()->div(left, right);
 }

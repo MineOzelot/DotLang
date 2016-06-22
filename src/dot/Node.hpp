@@ -32,6 +32,7 @@ enum NodeType {
 };
 
 struct ExprNode {
+    ExprNode *parent = nullptr;
     virtual NodeType type() = 0;
     virtual ~ExprNode() {};
 };

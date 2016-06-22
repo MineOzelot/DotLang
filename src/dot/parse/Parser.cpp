@@ -43,6 +43,30 @@ ExprNode *Parser::parse() {
     return list;
 }
 
+bool Parser::isOperator(TokenType t) {
+    switch(t) {
+        case T_PLUS:
+        case T_MINUS:
+        case T_MUL:
+        case T_DIV:
+            return true;
+        default:
+            return false;
+    }
+}
+
+int Parser::getTokenOperatorId(TokenType t) {
+    switch(t) {
+        case T_ASSIGN: return 0;
+        case T_LAZY_ASSIGN: return 1;
+        case T_PLUS: return 2;
+        case T_MINUS: return 3;
+        case T_MUL: return 4;
+        case T_DIV: return 5;
+        default: return -1;
+    }
+}
+
 Token *Parser::nextToken() {
     if(tokens.is_end())
         tokens.push_back(lex->nextToken());

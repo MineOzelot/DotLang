@@ -18,7 +18,6 @@
  */
 
 #include <iostream>
-#include <string>
 #include "Dot.hpp"
 #include "parse/Parser.hpp"
 #include "Exception.hpp"
@@ -39,6 +38,8 @@ void Dot::init() {
     operators.push_back(new MethodOperator(this)); //1
     operators.push_back(new AddOperator(this)); //2
     operators.push_back(new SubOperator(this)); //3
+    operators.push_back(new MulOperator(this)); //4
+    operators.push_back(new DivOperator(this)); //5
 
 
     unsigned long cur = symtbl->cur++;

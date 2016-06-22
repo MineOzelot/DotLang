@@ -28,113 +28,74 @@
  * 2 - 'f'
  * 3 - '='
  * 4 - ':'
- * 5 - any_digit
- * 6 - any_letter
- * 7 - [ \r\t]
- * 8 - '+'
- * 9 - '-'
- * 10 - '"'
- * 11 - eof
- * 12 - '\n'
- * 13 - '('
- * 14 - ')'
- * 15 - ','
- * 16 - any_character
+ * 5 - '\r'
+ * 6 - '\t'
+ * 7 - '+'
+ * 8 - '-'
+ * 9 - '\"'
+ * 10 - eof
+ * 11 - '\n'
+ * 12 - '('
+ * 13 - ')'
+ * 14 - ','
+ * 15 - '*'
+ * 16 - '/'
+ *
+ * 17 - any_digit
+ * 18 - any_letter
  */
-const int state_table[][18] {
-       // 0    1    2    3    4    5    6    7    8    9   10   11   12   13   14   15   16
-       // d    e    f    =    :    0    a         +    -    "   \0   \n    (    )    ,   ac
-        { 6,   5,   5,   2,   1,   4,   5,  17,  10,  11,  16,  18,  19,  20,  21,  22,  -1 }, //state 0
-        { 0,   0,   0,   3,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0 }, //state 1: :
-        { 0,   0,   0,   9,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0 }, //state 2: =
-        { 0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0 }, //state 3: :=
-        { 0,   0,   0,   0,   0,   4,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0 }, //state 4: /number
-        { 5,   5,   5,   0,   0,   5,   5,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0 }, //state 5: /ident
-        { 5,   7,   5,   0,   0,   5,   5,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0 }, //state 6: d
-        { 5,   5,   8,   0,   0,   5,   5,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0 }, //state 7: de
-        { 5,   5,   5,   0,   0,   5,   5,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0 }, //state 8: def
-        { 0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0 }, //state 9: ==
-       // 0    1    2    3    4    5    6    7    8    9   10   11   12   13   14   15   16
-        { 0,   0,   0,  12,   0,   4,   0,   0,  14,   0,   0,   0,   0,   0,   0,   0,   0 }, //state 10: +
-        { 0,   0,   0,  13,   0,   4,   0,   0,   0,  15,   0,   0,   0,   0,   0,   0,   0 }, //state 11: -
-        { 0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0 }, //state 12: +=
-        { 0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0 }, //state 13: -=
-        { 0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0 }, //state 14: ++
-        { 0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0 }, //state 15: --
-        { 0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0 }, //state 16: "
-        { 0,   0,   0,   0,   0,   0,   0,  17,   0,   0,   0,   0,   0,   0,   0,   0,   0 }, //state 17: /whitespace
-        { 0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0 }, //state 18: /eof
-        { 0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0 }, //state 19: \n
-        { 0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0 }, //state 20: (
-        { 0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0 }, //state 21: )
-        { 0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0 }, //state 22: ,
+const char chars[] = "def=:\r\t +-\"\0\n(),*/";
+const int lex_table[][20] {
+       // 0    1    2    3    4    5    6    7    8    9   10   11   12   13   14   15   16   17   18   19
+       // d    e    f    =    :   \r   \t         +    -    "   \0   \n    (    )    ,    *    /   ad   al
+        { 6,   5,   5,   2,   1,  17,  17,  17,  10,  11,  16,  18,  19,  20,  21,  22,  23,  24,   4,   5 }, //state 0
+        { 0,   0,   0,   3,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0 }, //state 1: :
+        { 0,   0,   0,   9,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0 }, //state 2: =
+        { 0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0 }, //state 3: :=
+        { 0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   4,   0 }, //state 4: /number
+        { 5,   5,   5,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   5,   5 }, //state 5: /ident
+        { 5,   7,   5,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   5,   5 }, //state 6: d
+        { 5,   5,   8,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   5,   5 }, //state 7: de
+        { 5,   5,   5,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   5,   5 }, //state 8: def
+        { 0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0 }, //state 9: ==
+        { 0,   0,   0,  12,   0,   0,   0,   0,  14,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0 }, //state 10: +
+        { 0,   0,   0,  13,   0,   0,   0,   0,   0,  15,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0 }, //state 11: -
+        { 0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0 }, //state 12: +=
+        { 0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0 }, //state 13: -=
+        { 0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0 }, //state 14: ++
+        { 0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0 }, //state 15: --
+        { 0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0 }, //state 16: "
+        { 0,   0,   0,   0,   0,  17,  17,  17,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0 }, //state 17: /whitespace
+        { 0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0 }, //state 18: /eof
+        { 0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0 }, //state 19: \n
+        { 0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0 }, //state 20: (
+        { 0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0 }, //state 21: )
+        { 0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0 }, //state 22: ,
+        { 0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0 }, //state 23: *
+        { 0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0 }, //state 24: /
 };
+const int chars_size = sizeof(chars) / sizeof(char) - 1;
 
-bool isDigit(char ch);
-bool isIdent(char ch);
+inline bool isDigit(char ch) {
+    return ch >= '0' && ch <= '9';
+}
+
+bool isLetter(char ch) {
+    if(ch >= 'a' && ch <= 'z') return true;
+    if(ch >= 'A' && ch <= 'Z') return true;
+    return ch == '_' || ch == '$';
+}
 
 int getid(char ch) {
-    int id;
-    switch (ch) {
-        case 'd': id = 0; break;
-        case 'e': id = 1; break;
-        case 'f': id = 2; break;
-        case '=': id = 3; break;
-        case ':': id = 4; break;
+    for(int c = 0; c < chars_size; c++) if(chars[c] == ch) return c;
 
-        case ' ':
-        case '\r':
-        case '\t': id = 7; break;
-        case '+': id = 8; break;
-        case '-': id = 9; break;
-
-        case '\'':
-        case '"': id = 10; break;
-        case 0:
-        case -1: id = 11; break;
-        case '\n': id = 12; break;
-        case '(': id = 13; break;
-        case ')': id = 14; break;
-        case ',': id = 15; break;
-
-        default:
-            if(isDigit(ch)) id = 5;
-            else if(isIdent(ch)) id = 6;
-            else {
-                std::stringstream msg;
-                msg << "Unrecognized character: "
-                << ch << "("
-                << (int) ch << ")";
-                throw LexerException(msg.str());
-            }
-    }
-    return id;
-}
-
-bool isDigit(char ch) {
-    switch (ch) {
-        case '0': case '1': case '2': case '3': case '4':
-        case '5': case '6': case '7': case '8': case '9':
-            return true;
-        default:
-            return false;
-    }
-}
-
-bool isIdent(char ch) {
-    switch (ch) {
-        case 'A': case 'B': case 'C': case 'D': case 'E': case 'F': case 'G':
-        case 'H': case 'I': case 'J': case 'K': case 'L': case 'M': case 'N':
-        case 'O': case 'P': case 'Q': case 'R': case 'S': case 'T': case 'U':
-        case 'V': case 'W': case 'X': case 'Y': case 'Z':
-        case 'a': case 'b': case 'c': case 'd': case 'e': case 'f': case 'g':
-        case 'h': case 'i': case 'j': case 'k': case 'l': case 'm': case 'n':
-        case 'o': case 'p': case 'q': case 'r': case 's': case 't': case 'u':
-        case 'v': case 'w': case 'x': case 'y': case 'z':
-        case '_': case '$':
-            return true;
-        default:
-            return false;
+    if(isLetter(ch)) return chars_size + 1;
+    else if(isDigit(ch)) return chars_size;
+    else if(ch == -1) return 11;
+    else {
+        std::stringstream msg;
+        msg << "Unrecognized character: " << ch << "(" << (int) ch << ")";
+        throw LexerException(msg.str());
     }
 }
 
