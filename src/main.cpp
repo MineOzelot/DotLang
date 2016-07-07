@@ -24,7 +24,6 @@
 
 int main(int argc, char *argv[]) {
     std::istream *in;
-
     if(argc > 1) {
         std::ifstream *ifs = new std::ifstream(argv[1]);
         if(ifs->bad() || ifs->eof()) {

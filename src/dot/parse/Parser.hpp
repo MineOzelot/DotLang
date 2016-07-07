@@ -33,6 +33,7 @@ class Parser {
 
     bool isOperator(TokenType t);
     int getTokenOperatorId(TokenType t);
+    int getTokenPrecedence(TokenType t);
 
     Token *nextToken();
     Token *prevToken();
@@ -42,13 +43,17 @@ class Parser {
     ExprNode *parseIdent();
     ExprNode *parseNumber();
     ExprNode *parseString();
+    ExprNode *parseValue();
 
     ExprNode *parseExpr();
+
+    ExprNode *parseOperator(ExprNode *left);
 
     ListNode *parseArgList();
 
     ExprNode *error(const char *msg);
 public:
+
     Parser(Lexer *lex);
 
     ExprNode *parse();

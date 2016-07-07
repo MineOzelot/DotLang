@@ -110,18 +110,17 @@ DotValue *Dot::createNumber(long num) {
 void Dot::print_debug_report() {
     std::cout
     << "Debug report:\n";
-    for(std::map<unsigned long, std::string *>::iterator it = symtbl->map.begin();
+    for(auto it = symtbl->map.begin();
         it != symtbl->map.end(); it++) {
         std::cout << "Sym " << it->first << " - " << *it->second << '\n';
     }
     std::cout << "Variables:\n";
-    for(std::map<unsigned long, DotVariable *>::iterator it = variables.begin();
+    for(auto it = variables.begin();
         it != variables.end(); it++) {
         std::cout << "Var " << *symtbl->map[it->first] << '\n';
     }
     std::cout << "Methods:\n";
-    for(std::map<unsigned long, DotMethod *>::iterator it = methods.begin();
-        it != methods.end(); it++) {
+    for(auto it = methods.begin(); it != methods.end(); it++) {
         std::cout << "Method " << *symtbl->map[it->first] << '\n';
     }
     std::cout << std::endl;
@@ -140,7 +139,7 @@ void Dot::defineValue(DotValue *value) {
 }
 
 unsigned long Dot::defineSymbol(std::string str) {
-    for(std::map<unsigned long, std::string*>::iterator it = symtbl->map.begin(); it != symtbl->map.end(); it++)
+    for(auto it = symtbl->map.begin(); it != symtbl->map.end(); it++)
         if(*(it->second) == str)
             return it->first;
     unsigned long id = symtbl->cur++;

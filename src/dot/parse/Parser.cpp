@@ -67,6 +67,15 @@ int Parser::getTokenOperatorId(TokenType t) {
     }
 }
 
+int Parser::getTokenPrecedence(TokenType t) {
+    switch(t) {
+        case T_ASSIGN: case T_LAZY_ASSIGN: return 0;
+        case T_PLUS: case T_MINUS: return 10;
+        case T_MUL: case T_DIV: return 20;
+        default: return 0;
+    }
+}
+
 Token *Parser::nextToken() {
     if(tokens.is_end())
         tokens.push_back(lex->nextToken());
