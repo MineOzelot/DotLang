@@ -21,23 +21,24 @@
 #define DOTLANG_DOTMETHOD_HPP
 
 
+#include <vector>
 #include "DotValue.hpp"
-#include "../../lens/TList.hpp"
 
 class Dot;
+class Scope;
 
 class DotMethod {
 protected:
     Dot *dot;
 public:
     DotMethod(Dot *dot): dot(dot) {}
-    virtual DotValue *call(lens::TList<DotValue *> *args);
+    virtual DotValue *call(Scope *scope, std::vector<DotValue*> args);
 };
 
 class DotPrintLnMethod: public DotMethod {
 public:
     DotPrintLnMethod(Dot *dot): DotMethod(dot) {}
-    DotValue *call(lens::TList<DotValue *> *args);
+    DotValue *call(Scope *scope, std::vector<DotValue*> args);
 };
 
 

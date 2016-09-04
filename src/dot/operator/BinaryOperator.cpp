@@ -26,8 +26,8 @@ DotValue *AssignOperator::exec(ExprNode *node, DotVariable *left, DotValue *righ
     return right;
 }
 
-DotValue *MethodOperator::exec(ExprNode *node, unsigned long id, lens::TList<DotValue *> *args) {
-    return dot->getMethod(id)->call(args);
+DotValue *MethodOperator::exec(ExprNode *node, unsigned long id, std::vector<DotValue*> args, Scope *scope) {
+    return scope->getMethod(id)->call(scope, args);
 }
 
 inline DotValue *AddOperator::exec(ExprNode *node, DotValue *left, DotValue *right) {

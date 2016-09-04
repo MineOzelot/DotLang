@@ -45,8 +45,5 @@ int main(int argc, char *argv[]) {
 
     dot->terminate();
 
-    std::cout << "---------------------------------------------------\n";
-    dot->print_debug_report();
-
     delete dot;
 }

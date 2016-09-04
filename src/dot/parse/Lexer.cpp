@@ -80,12 +80,10 @@ Token *Lexer::lex() {
 }
 
 unsigned long Lexer::addsym() {
-    for(std::map<unsigned long, std::string*>::iterator it = sym->map.begin(); it != sym->map.end(); it++)
-        if(*(it->second) == str)
-            return it->first;
-    unsigned long id = sym->cur++;
-    sym->map.insert(std::pair<unsigned long, std::string*>(id, new std::string(str)));
-    return id;
+    if(sym->contains(str))
+        return sym->id(str);
+    std::string s = std::string(str);
+    return sym->add(s);
 }
 
 SymbolTable *Lexer::getSymTbl() {

@@ -1,7 +1,7 @@
 /*  DotLang - The Dot Interpreter
  *  Copyright (C) 2016 MineOzelot
  *
- *  DotMethod.cpp
+ *  Scope.hpp
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -17,17 +17,35 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <iostream>
-#include "DotMethod.hpp"
-#include "../Dot.hpp"
+#ifndef DOTLANG_SCOPE_HPP
+#define DOTLANG_SCOPE_HPP
 
-DotValue *DotMethod::call(Scope *scope, std::vector<DotValue*> args) {
-    return dot->getNull();
-}
 
-DotValue *DotPrintLnMethod::call(Scope *scope, std::vector<DotValue*> args) {
-    if(args[0])
-        std::cout << *reinterpret_cast<std::string *>(args[0]->getType()->to_str(args[0])->getData());
-    std::cout << std::endl;
-    return dot->getNull();
-}
+#include <map>
+#include "type/DotVariable.hpp"
+#include "type/DotMethod.hpp"
+
+typedef std::map<unsigned long, DotVariable *> VarMap;
+typedef std::map<unsigned long, DotMethod *> MethodMap;
+
+class Scope {
+    Scope *parent;
+
+    VarMap variables;
+    MethodMap methods;
+public:
+    Scope();
+    Scope(Scope *parent);
+
+    void define(unsigned long sym, DotVariable *var);
+    void define(unsigned long sym, DotMethod *met);
+
+    DotVariable *getVariable(unsigned long sym);
+    DotMethod *getMethod(unsigned long sym);
+
+    Scope *child();
+    Scope *close();
+};
+
+
+#endif //DOTLANG_SCOPE_HPP

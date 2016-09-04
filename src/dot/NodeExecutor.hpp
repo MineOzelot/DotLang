@@ -21,19 +21,42 @@
 #define DOTLANG_NODEEXECUTOR_HPP
 
 
+#include <stack>
 #include "Node.hpp"
+#include "Scope.hpp"
 #include "type/DotValue.hpp"
 
 class Dot;
 
+class TreeWalker {
+    ListNode *current;
+
+    Dot *dot;
+    Scope *scope;
+
+    std::stack<ListNode *> stack;
+public:
+    TreeWalker(Dot *dot, Scope *scope);
+
+    bool next();
+
+    void enter(ListNode *node);
+
+    DotValue *exec(ExprNode *node);
+
+    void reset(Scope *scope);
+};
+
 class NodeExecutor {
     Dot *dot;
-
-    DotValue *execNode(ExprNode *node);
+    TreeWalker *walker;
 public:
     NodeExecutor(Dot *dot);
 
-    DotValue *run(ExprNode *node);
+    DotValue *start(ExprNode *node);
+    bool next();
+
+    virtual ~NodeExecutor();
 };
 
 

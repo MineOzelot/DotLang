@@ -20,10 +20,9 @@
 #ifndef DOTLANG_BINARYOPERATOR_HPP
 #define DOTLANG_BINARYOPERATOR_HPP
 
+#include <vector>
 #include "BaseOperator.hpp"
 #include "../type/DotVariable.hpp"
-#include "../../lens/TList.hpp"
-
 
 class AssignOperator: public BaseAssignOperator {
 public:
@@ -34,7 +33,7 @@ public:
 class MethodOperator: public BaseOperator {
 public:
     MethodOperator(Dot *dot): BaseOperator(dot) {}
-    DotValue *exec(ExprNode *node, unsigned long id, lens::TList<DotValue *> *args);
+    DotValue *exec(ExprNode *node, unsigned long id, std::vector<DotValue*> args, Scope *scope);
 };
 
 class AddOperator: public BinaryOperator {

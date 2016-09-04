@@ -29,6 +29,7 @@
 #include "operator/BaseOperator.hpp"
 #include "operator/BinaryOperator.hpp"
 #include "type/DotMethod.hpp"
+#include "Scope.hpp"
 
 class Dot {
     SymbolTable *symtbl;
@@ -36,8 +37,10 @@ class Dot {
 
     std::vector<BaseOperator *> operators;
 
-    std::map<unsigned long, DotVariable *> variables;
-    std::map<unsigned long, DotMethod *> methods;
+    Scope *global_scope;
+
+    //std::map<unsigned long, DotVariable *> variables;
+    //std::map<unsigned long, DotMethod *> methods;
     std::vector<DotValue *> values;
 
     DotType *null_type;
@@ -48,8 +51,9 @@ class Dot {
 public:
     Dot();
 
+    MethodOperator *operatorMethod;
+
     void init();
-    void print_debug_report();
     void terminate();
 
     ExprNode *parse(std::istream *in);
@@ -58,16 +62,17 @@ public:
     DotValue *getNull();
     BaseOperator *getOperator(int id);
 
-    unsigned long defineSymbol(std::string str);
-    std::string getSymbol(unsigned long sym);
+    SymbolTable *getSymTbl();
 
-    void defineVariable(unsigned long sym, DotVariable *var);
+    Scope *getGlobalScope();
+
     void defineValue(DotValue *value);
-    void defineMethod(unsigned long sym, DotMethod *met);
 
-    DotVariable *getVariable(unsigned long sym);
+    void defineVariable(std::string name, DotVariable *var);
+    void defineMethod(std::string name, DotMethod *met);
 
-    DotMethod *getMethod(unsigned long sym);
+    DotVariable *getVariable(std::string name);
+    DotMethod *getMethod(std::string name);
 
     DotValue *createString(std::string str);
     DotValue *createNumber(long num);

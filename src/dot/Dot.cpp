@@ -28,6 +28,8 @@ Dot::Dot() {
 }
 
 void Dot::init() {
+    global_scope = new Scope();
+
     null_type = new DotType(this, "null");
     string_type = new DotString(this);
     number_type = new DotNumber(this);
@@ -35,16 +37,13 @@ void Dot::init() {
     null_value = new DotValue(this, null_type);
 
     operators.push_back(new AssignOperator(this)); //0
-    operators.push_back(new MethodOperator(this)); //1
+    operators.push_back((operatorMethod = new MethodOperator(this))); //1
     operators.push_back(new AddOperator(this)); //2
     operators.push_back(new SubOperator(this)); //3
     operators.push_back(new MulOperator(this)); //4
     operators.push_back(new DivOperator(this)); //5
 
-
-    unsigned long cur = symtbl->cur++;
-    symtbl->map.insert(std::pair<unsigned long, std::string *>(cur, new std::string("println")));
-    methods.insert(std::pair<unsigned long, DotMethod *>(cur, new DotPrintLnMethod(this)));
+    defineMethod("println", new DotPrintLnMethod(this));
 }
 
 ExprNode *Dot::parse(std::istream *in) {
@@ -69,7 +68,9 @@ ExprNode *Dot::parse(std::istream *in) {
 }
 
 DotValue *Dot::exec(ExprNode *node) {
-    return ne->run(node);
+    ne->start(node);
+    while(ne->next());
+    return getNull();
 }
 
 DotValue *Dot::getNull() {
@@ -85,18 +86,12 @@ BaseOperator *Dot::getOperator(int id) {
     return operators[id];
 }
 
-DotVariable *Dot::getVariable(unsigned long sym) {
-    if(variables.count(sym) > 0) {
-        return variables[sym];
-    } else {
-        DotVariable *var = new DotVariable(this);
-        variables.insert(std::pair<unsigned long, DotVariable *>(sym, var));
-        return var;
-    }
+DotVariable *Dot::getVariable(std::string name) {
+    return global_scope->getVariable(symtbl->id(name));
 }
 
-DotMethod *Dot::getMethod(unsigned long sym) {
-    return methods[sym];
+DotMethod *Dot::getMethod(std::string name) {
+    return global_scope->getMethod(symtbl->id(name));
 }
 
 DotValue *Dot::createString(std::string str) {
@@ -107,46 +102,24 @@ DotValue *Dot::createNumber(long num) {
     return number_type->create(num);
 }
 
-void Dot::print_debug_report() {
-    std::cout
-    << "Debug report:\n";
-    for(auto it = symtbl->map.begin();
-        it != symtbl->map.end(); it++) {
-        std::cout << "Sym " << it->first << " - " << *it->second << '\n';
-    }
-    std::cout << "Variables:\n";
-    for(auto it = variables.begin();
-        it != variables.end(); it++) {
-        std::cout << "Var " << *symtbl->map[it->first] << '\n';
-    }
-    std::cout << "Methods:\n";
-    for(auto it = methods.begin(); it != methods.end(); it++) {
-        std::cout << "Method " << *symtbl->map[it->first] << '\n';
-    }
-    std::cout << std::endl;
+void Dot::defineVariable(std::string name, DotVariable *var) {
+    if(symtbl->contains(name)) symtbl->add(name);
+    global_scope->define(symtbl->id(name), var);
 }
 
-void Dot::defineVariable(unsigned long sym, DotVariable *var) {
-    variables.insert(std::pair<unsigned long, DotVariable *>(sym, var));
-}
-
-void Dot::defineMethod(unsigned long sym, DotMethod *met) {
-    methods.insert(std::pair<unsigned long, DotMethod *>(sym, met));
+void Dot::defineMethod(std::string name, DotMethod *met) {
+    if(symtbl->contains(name)) symtbl->add(name);
+    global_scope->define(symtbl->id(name), met);
 }
 
 void Dot::defineValue(DotValue *value) {
     values.push_back(value);
 }
 
-unsigned long Dot::defineSymbol(std::string str) {
-    for(auto it = symtbl->map.begin(); it != symtbl->map.end(); it++)
-        if(*(it->second) == str)
-            return it->first;
-    unsigned long id = symtbl->cur++;
-    symtbl->map.insert(std::pair<unsigned long, std::string*>(id, new std::string(str)));
-    return id;
+SymbolTable *Dot::getSymTbl() {
+    return symtbl;
 }
 
-std::string Dot::getSymbol(unsigned long sym) {
-    return *symtbl->map[sym];
+Scope *Dot::getGlobalScope() {
+    return global_scope;
 }

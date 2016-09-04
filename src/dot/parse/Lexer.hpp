@@ -25,9 +25,39 @@
 #include <map>
 #include "Token.hpp"
 
-struct SymbolTable {
-    std::map<unsigned long, std::string*> map;
-    unsigned long cur = 1;
+class SymbolTable {
+    std::map<unsigned long, std::string> *val_map;
+    std::map<std::string, unsigned long> *key_map;
+    unsigned long cur = 0;
+public:
+    SymbolTable() {
+        val_map = new std::map<unsigned long, std::string>();
+        key_map = new std::map<std::string, unsigned long>();
+    }
+
+    unsigned long id(std::string &str) {
+        return key_map->operator[](str);
+    }
+
+    std::string value(unsigned long sym) {
+        return std::string(val_map->operator[](sym));
+    }
+
+    unsigned long add(std::string &str) {
+        cur++;
+        val_map->insert(std::pair<unsigned long, std::string>(cur, str));
+        key_map->insert(std::pair<std::string, unsigned long>(str, cur));
+        return cur;
+    }
+
+    bool contains(std::string &str) {
+        return key_map->count(str) > 0;
+    }
+
+    ~SymbolTable() {
+        delete val_map;
+        delete key_map;
+    }
 };
 
 class Lexer {
