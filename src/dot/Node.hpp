@@ -28,49 +28,41 @@ class Dot;
 class Scope;
 class TreeWalker;
 
-enum NodeType {
-    NUMBER, STRING,
-    VARIABLE,
-    BINOPERATOR, UNOPERATOR, ASSIGN,
-    METHOD,
-    LIST
-};
-
 struct ExprNode {
-    virtual NodeType type() = 0;
+    virtual const char *type() = 0;
     virtual DotValue *execute(Dot *dot, Scope *scope, TreeWalker *walker) = 0;
     virtual ~ExprNode() {};
 };
 
 struct NumberExprNode: public ExprNode {
     unsigned long num;
-    NodeType type() { return NUMBER; }
+    const char *type() { return "node_number"; }
     NumberExprNode(unsigned long num): num(num) {}
     DotValue *execute(Dot *dot, Scope *scope, TreeWalker *walker);
 };
 struct StringExprNode: public ExprNode {
     unsigned long str;
-    NodeType type() { return STRING; }
+    const char *type() { return "node_string"; }
     StringExprNode(unsigned long str): str(str) {}
     DotValue *execute(Dot *dot, Scope *scope, TreeWalker *walker);
 };
 struct VarExprNode: public ExprNode {
     unsigned long name;
-    NodeType type() { return VARIABLE; }
+    const char *type() { return "node_variable"; }
     VarExprNode(unsigned long name): name(name) {}
     DotValue *execute(Dot *dot, Scope *scope, TreeWalker *walker);
 };
 struct BinaryOpNode: public ExprNode {
     int op;
     ExprNode *left, *right;
-    NodeType type() { return BINOPERATOR; }
+    const char *type() { return "node_operator"; }
     BinaryOpNode(int op, ExprNode *left, ExprNode *right): op(op), left(left), right(right) {}
     DotValue *execute(Dot *dot, Scope *scope, TreeWalker *walker);
 };
 struct UnaryOpNode: public ExprNode {
     int op;
     ExprNode *right;
-    NodeType type() { return UNOPERATOR; }
+    const char *type() { return "node_unary_operator"; }
     UnaryOpNode(int op, ExprNode *right): op(op), right(right) {}
     DotValue *execute(Dot *dot, Scope *scope, TreeWalker *walker);
 };
@@ -78,20 +70,20 @@ struct AssignOpNode: public ExprNode {
     int op;
     VarExprNode *left;
     ExprNode *right;
-    NodeType type() { return ASSIGN; }
+    const char *type() { return "node_assign_operator"; }
     AssignOpNode(int op, VarExprNode *left, ExprNode *right): op(op), left(left), right(right) {}
     DotValue *execute(Dot *dot, Scope *scope, TreeWalker *walker);
 };
 struct ListNode: public ExprNode {
     ListNode *prev = nullptr, *next = nullptr;
     ExprNode *val = nullptr;
-    NodeType type() { return LIST; }
+    const char *type() { return "node_list"; }
     DotValue *execute(Dot *dot, Scope *scope, TreeWalker *walker);
 };
 struct CallNode: public ExprNode {
     unsigned long id;
     ListNode *args;
-    NodeType type() { return METHOD; }
+    const char *type() { return "node_method_call"; }
     CallNode(unsigned long id, ListNode *node): id(id), args(node) {}
     DotValue *execute(Dot *dot, Scope *scope, TreeWalker *walker);
 };

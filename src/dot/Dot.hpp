@@ -39,8 +39,6 @@ class Dot {
 
     Scope *global_scope;
 
-    //std::map<unsigned long, DotVariable *> variables;
-    //std::map<unsigned long, DotMethod *> methods;
     std::vector<DotValue *> values;
 
     DotType *null_type;
