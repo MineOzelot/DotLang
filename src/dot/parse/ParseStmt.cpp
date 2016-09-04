@@ -23,6 +23,7 @@
 ExprNode *Parser::parseStmt() {
     switch (curtok->type) {
         case T_IDENT: return parseIdent();
+        case T_LBRACE: return parseBraces();
         default: return error("syntax error");
     }
 }
@@ -50,6 +51,7 @@ ListNode *Parser::parseArgList() {
     ListNode *ret = new ListNode();
     ListNode *cur = ret;
     while(true) {
+        if(curtok->type == T_RPARENT) break;
         ExprNode *node = parseExpr();
         ListNode *next = new ListNode();
         cur->val = node;
@@ -57,7 +59,7 @@ ListNode *Parser::parseArgList() {
         cur->next = next;
         cur = next;
         if(curtok->type == T_COMMA) { nextToken(); continue; }
-        if(curtok->type == T_RPARENT) break;
+        else if(curtok->type == T_RPARENT) break;
         else return (ListNode *) error("syntax error");
     }
     nextToken();
@@ -69,6 +71,7 @@ ExprNode *Parser::parseExpr() {
         case T_IDENT: return parseIdent();
         case T_NUMBER: return parseNumber();
         case T_STRING: return parseString();
+        case T_LBRACE: return parseBraces();
         default: return error("syntax error");
     }
 }
@@ -108,4 +111,42 @@ ExprNode *Parser::parseOperator(ExprNode *left) {
     };
     prevToken();
     return new BinaryOpNode(id, left, parseExpr());
+}
+
+/*
+ * ListNode *Parser::parseArgList() {
+    ListNode *ret = new ListNode();
+    ListNode *cur = ret;
+    while(true) {
+        ExprNode *node = parseExpr();
+        ListNode *next = new ListNode();
+        cur->val = node;
+        next->prev = cur;
+        cur->next = next;
+        cur = next;
+        if(curtok->type == T_COMMA) { nextToken(); continue; }
+        else if(curtok->type == T_RPARENT) break;
+        else return (ListNode *) error("syntax error");
+    }
+    nextToken();
+    return ret;
+}
+ */
+
+ExprNode *Parser::parseBraces() {
+    ListNode *ret = new ListNode();
+    ListNode *cur = ret;
+    nextToken();
+    while(true) {
+        if(curtok->type==T_RBRACE) break;
+        else if(curtok->type==T_EOF) return error("expected }");
+        ExprNode *node = parseExpr();
+        ListNode *next = new ListNode();
+        cur->val = node;
+        next->prev = cur; //todo: сделать ListNodeBuilder
+        cur->next = next;
+        cur = next;
+    }
+    nextToken();
+    return ret;
 }

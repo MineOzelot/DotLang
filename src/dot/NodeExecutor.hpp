@@ -34,6 +34,8 @@ class TreeWalker {
     Dot *dot;
     Scope *scope;
 
+    bool doNext = true;
+
     std::stack<ListNode *> stack;
 public:
     TreeWalker(Dot *dot, Scope *scope);

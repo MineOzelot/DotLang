@@ -46,6 +46,7 @@ class Parser {
     ExprNode *parseValue();
 
     ExprNode *parseExpr();
+    ExprNode *parseBraces();
 
     ExprNode *parseOperator(ExprNode *left);
 

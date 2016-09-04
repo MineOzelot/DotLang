@@ -17,6 +17,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <iostream>
 #include "NodeExecutor.hpp"
 #include "operator/BinaryOperator.hpp"
 #include "Dot.hpp"
@@ -26,7 +27,7 @@ TreeWalker::TreeWalker(Dot *dot, Scope *scope): scope(scope), dot(dot) { }
 bool TreeWalker::next() {
     if(current && current->val) {
         exec(current->val);
-        current = current->next;
+        if(doNext) current = current->next; else doNext = true;
     } else {
         if(!stack.empty()) {
             current = stack.top();
@@ -45,9 +46,14 @@ void TreeWalker::reset(Scope *scope) {
 }
 
 void TreeWalker::enter(ListNode *node) {
-    stack.push(current);
-    scope = scope->child();
-    current = node;
+    if(node) {
+        if(current) {
+            stack.push(current->next);
+            doNext = false;
+        }
+        scope = scope->child();
+        current = node;
+    }
 }
 
 DotValue *TreeWalker::exec(ExprNode *node) {

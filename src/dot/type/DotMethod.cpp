@@ -26,7 +26,7 @@ DotValue *DotMethod::call(Scope *scope, std::vector<DotValue*> args) {
 }
 
 DotValue *DotPrintLnMethod::call(Scope *scope, std::vector<DotValue*> args) {
-    if(args[0])
+    if(!args.empty())
         std::cout << *reinterpret_cast<std::string *>(args[0]->getType()->to_str(args[0])->getData());
     std::cout << std::endl;
     return dot->getNull();

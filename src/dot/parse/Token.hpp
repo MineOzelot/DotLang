@@ -39,6 +39,7 @@ enum TokenType {
     T_INCREMENT, T_DECREMENT,
 
     T_LPARENT, T_RPARENT,
+    T_LBRACE, T_RBRACE,
     T_COMMA, T_STRING,
 
     T_KW_DEF

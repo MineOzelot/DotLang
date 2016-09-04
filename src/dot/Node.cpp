@@ -27,7 +27,8 @@ DotValue *StringExprNode::execute(Dot *dot, Scope *scope, TreeWalker *walker) {
 }
 
 DotValue *VarExprNode::execute(Dot *dot, Scope *scope, TreeWalker *walker) {
-    return scope->getVariable(name)->getValue();
+    DotVariable *var = scope->getVariable(name);
+    return var ? var->getValue() : dot->getNull();
 }
 
 DotValue *UnaryOpNode::execute(Dot *dot, Scope *scope, TreeWalker *walker) {
@@ -39,7 +40,14 @@ DotValue *BinaryOpNode::execute(Dot *dot, Scope *scope, TreeWalker *walker) {
 }
 
 DotValue *AssignOpNode::execute(Dot *dot, Scope *scope, TreeWalker *walker) {
-    return static_cast<AssignOperator*>(dot->getOperator(op))->exec(this, scope->getVariable(left->name), walker->exec(right));
+    DotVariable *var = scope->getVariable(left->name);
+    if(!var) {
+        scope->define(left->name, (var = new DotVariable(dot)));
+    }
+    return static_cast<AssignOperator*>(dot->getOperator(op))->exec(
+            this, var,
+            walker->exec(right)
+    );
 }
 
 DotValue *ListNode::execute(Dot *dot, Scope *scope, TreeWalker *walker) {

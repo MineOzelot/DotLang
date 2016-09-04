@@ -64,6 +64,8 @@ Token *Lexer::lex() {
                 case 22:    return new Token(T_COMMA, token_start, 0);
                 case 23:    return new Token(T_MUL, token_start, 0);
                 case 24:    return new Token(T_DIV, token_start, 0);
+                case 25:    return new Token(T_LBRACE, token_start, 0);
+                case 26:    return new Token(T_RBRACE, token_start, 0);
 
                 default: throw LexerException(str);
             }
@@ -100,8 +102,7 @@ Token *Lexer::lexString() {
             << cur << "("
             << (int) cur << ")";
             throw LexerException(msg.str());
-        }
-        if(cur == '\\') {
+        } else if(cur == '\\') {
             pos.next();
             switch(code->get()) {
                 case 'n': cur = '\n'; break;
@@ -109,6 +110,8 @@ Token *Lexer::lexString() {
                 case 'r': cur = '\r'; break;
                 default: goto re;
             }
+        } else if(cur == '\n') {
+            goto re;
         }
         str += cur;
         cur = (char) code->get();
