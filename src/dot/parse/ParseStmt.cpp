@@ -113,26 +113,6 @@ ExprNode *Parser::parseOperator(ExprNode *left) {
     return new BinaryOpNode(id, left, parseExpr());
 }
 
-/*
- * ListNode *Parser::parseArgList() {
-    ListNode *ret = new ListNode();
-    ListNode *cur = ret;
-    while(true) {
-        ExprNode *node = parseExpr();
-        ListNode *next = new ListNode();
-        cur->val = node;
-        next->prev = cur;
-        cur->next = next;
-        cur = next;
-        if(curtok->type == T_COMMA) { nextToken(); continue; }
-        else if(curtok->type == T_RPARENT) break;
-        else return (ListNode *) error("syntax error");
-    }
-    nextToken();
-    return ret;
-}
- */
-
 ExprNode *Parser::parseBraces() {
     ListNode *ret = new ListNode();
     ListNode *cur = ret;

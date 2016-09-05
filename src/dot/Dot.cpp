@@ -43,7 +43,7 @@ void Dot::init() {
     operators.push_back(new MulOperator(this)); //4
     operators.push_back(new DivOperator(this)); //5
 
-    defineMethod("println", new DotPrintLnMethod(this));
+    defineMethod("print", new DotPrintMethod(this));
 }
 
 ExprNode *Dot::parse(std::istream *in) {

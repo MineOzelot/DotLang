@@ -35,9 +35,9 @@ public:
     virtual DotValue *call(Scope *scope, std::vector<DotValue*> args);
 };
 
-class DotPrintLnMethod: public DotMethod {
+class DotPrintMethod: public DotMethod {
 public:
-    DotPrintLnMethod(Dot *dot): DotMethod(dot) {}
+    DotPrintMethod(Dot *dot): DotMethod(dot) {}
     DotValue *call(Scope *scope, std::vector<DotValue*> args);
 };
 

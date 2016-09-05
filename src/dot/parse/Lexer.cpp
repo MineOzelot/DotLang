@@ -74,6 +74,10 @@ Token *Lexer::lex() {
             str = "";
         } else {
             state = nid;
+            if(state == 16) {
+                cur = (char) code->get();
+                return lexString();
+            }
             str += cur;
             cur = (char) code->get();
             pos.next();
@@ -94,7 +98,6 @@ SymbolTable *Lexer::getSymTbl() {
 
 Token *Lexer::lexString() {
     str = "";
-    re:
     while(cur != '"') {
         if(cur == '\0') {
             std::stringstream msg;
@@ -105,13 +108,19 @@ Token *Lexer::lexString() {
         } else if(cur == '\\') {
             pos.next();
             switch(code->get()) {
-                case 'n': cur = '\n'; break;
+                case '0': cur = '\0'; break;
+                case 'a': cur = '\a'; break;
+                case 'b': cur = '\b'; break;
                 case 't': cur = '\t'; break;
+                case 'n': cur = '\n'; break;
+                case 'v': cur = '\v'; break;
+                case 'f': cur = '\f'; break;
                 case 'r': cur = '\r'; break;
-                default: goto re;
+                default: continue;
             }
         } else if(cur == '\n') {
-            goto re;
+            cur = (char) code->get(); pos.next();
+            continue;
         }
         str += cur;
         cur = (char) code->get();

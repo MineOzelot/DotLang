@@ -26,7 +26,7 @@ struct Position {
     void next(int c = 1);
     void line();
 
-    Position(unsigned long col = 0, unsigned long row = 0);
+    Position(unsigned long col = 1, unsigned long row = 1);
     Position(const Position &other);
 };
 
