@@ -23,13 +23,13 @@
 
 #include "DotValue.hpp"
 
-class Dot;
-
 class DotVariable {
     Dot *dot;
     DotValue *value;
 public:
     DotVariable(Dot *dot);
+    DotVariable(Dot *dot, DotValue *val);
+
     void setValue(DotValue *val);
     DotValue *getValue();
 };

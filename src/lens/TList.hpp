@@ -28,6 +28,11 @@ namespace lens {
         TElement *prev = nullptr;
         T value;
         TElement(T val): value(val) {}
+        TElement(TElement<T> &el) {
+            next = el.next;
+            prev = el.prev;
+            value = el.value;
+        }
     };
 
     template <class T>
@@ -38,6 +43,14 @@ namespace lens {
         TElement<T> *end = nullptr;
 
     public:
+
+        TList() {}
+
+        TList(TList<T> &list) {
+            head = list.head;
+            current = list.current;
+            end = list.end;
+        }
 
         T next() {
             if(current->next) {

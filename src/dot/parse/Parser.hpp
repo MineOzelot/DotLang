@@ -21,6 +21,7 @@
 #define DOTLANG_PARSER_HPP
 
 
+#include <vector>
 #include "Lexer.hpp"
 #include "../Node.hpp"
 #include "../../lens/TList.hpp"
@@ -50,7 +51,10 @@ class Parser {
 
     ExprNode *parseOperator(ExprNode *left);
 
-    ListNode *parseArgList();
+    std::vector<ExprNode*> parseArgList();
+
+    ExprNode *parseVarKW();
+    ExprNode *parseDefKW();
 
     ExprNode *error(const char *msg);
 public:

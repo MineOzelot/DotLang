@@ -21,15 +21,29 @@
 #include "DotMethod.hpp"
 #include "../Dot.hpp"
 
-DotValue *DotMethod::call(Scope *scope, std::vector<DotValue*> args) {
+DotValue *DotMethod::call(Scope *scope, std::vector<DotValue*> args, TreeWalker *walker) {
     return dot->getNull();
 }
 
-DotValue *DotPrintMethod::call(Scope *scope, std::vector<DotValue*> args) {
+DotValue *DotPrintMethod::call(Scope *scope, std::vector<DotValue*> args, TreeWalker *walker) {
     if(!args.empty()) {
         for(std::vector<DotValue*>::iterator it = args.begin(); it != args.end(); it++)
-            std::cout << *reinterpret_cast<std::string *>(it.operator*()->getType()->to_str(it.operator*())->getData());
+            std::cout << *(it.operator*()->getType()->to_str(*it)->getData<std::string>());
     }
     std::cout.flush();
     return dot->getNull();
+}
+
+DotValue *DefinedMethod::call(Scope *scope, std::vector<DotValue *> args, TreeWalker *walker) {
+    Scope *my = scope->child();
+    for(int g = 0; g < pars.size(); g++) {
+        DotValue *val;
+        if(g >= args.size())
+            val = dot->getNull();
+        else
+            val = args[g];
+        my->define(pars[g], new DotVariable(dot, val));
+    }
+    walker->enter(code, my);
+    return dot->getNull(); //todo: return
 }

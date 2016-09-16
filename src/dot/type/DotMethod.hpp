@@ -23,6 +23,7 @@
 
 #include <vector>
 #include "DotValue.hpp"
+#include "../Node.hpp"
 
 class Dot;
 class Scope;
@@ -32,13 +33,21 @@ protected:
     Dot *dot;
 public:
     DotMethod(Dot *dot): dot(dot) {}
-    virtual DotValue *call(Scope *scope, std::vector<DotValue*> args);
+    virtual DotValue *call(Scope *scope, std::vector<DotValue*> args, TreeWalker *walker);
+};
+
+class DefinedMethod: public DotMethod {
+    std::vector<unsigned long> pars;
+    ListNode *code;
+public:
+    DefinedMethod(Dot *dot, std::vector<unsigned long> args, ListNode *code): DotMethod(dot), pars(args), code(code) {}
+    DotValue *call(Scope *scope, std::vector<DotValue*> args, TreeWalker *walker);
 };
 
 class DotPrintMethod: public DotMethod {
 public:
     DotPrintMethod(Dot *dot): DotMethod(dot) {}
-    DotValue *call(Scope *scope, std::vector<DotValue*> args);
+    DotValue *call(Scope *scope, std::vector<DotValue*> args, TreeWalker *walker);
 };
 
 

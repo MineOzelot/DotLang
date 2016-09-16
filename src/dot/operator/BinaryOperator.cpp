@@ -26,8 +26,8 @@ DotValue *AssignOperator::exec(ExprNode *node, DotVariable *left, DotValue *righ
     return right;
 }
 
-DotValue *MethodOperator::exec(ExprNode *node, unsigned long id, std::vector<DotValue*> args, Scope *scope) {
-    return scope->getMethod(id)->call(scope, args);
+DotValue *MethodOperator::exec(ExprNode *node, unsigned long id, std::vector<DotValue*> args, Scope *scope, TreeWalker *walker) { //todo: Переделать
+    return scope->getMethod(id)->call(scope, args, walker);
 }
 
 inline DotValue *AddOperator::exec(ExprNode *node, DotValue *left, DotValue *right) {

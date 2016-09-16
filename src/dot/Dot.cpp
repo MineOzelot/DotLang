@@ -68,6 +68,7 @@ ExprNode *Dot::parse(std::istream *in) {
 }
 
 DotValue *Dot::exec(ExprNode *node) {
+    if(!node) return getNull();
     ne->start(node);
     while(ne->next());
     return getNull();

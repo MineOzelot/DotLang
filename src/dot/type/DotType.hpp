@@ -57,7 +57,7 @@ public:
     DotValue *to_str(DotValue *val);
 };
 
-class DotString: public DotType {
+class DotString: public DotType { //todo: Функцию для перевода в std::string
 public:
     DotString(Dot *dot);
     DotValue *create(std::string str);

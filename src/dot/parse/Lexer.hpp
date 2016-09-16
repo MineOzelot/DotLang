@@ -20,7 +20,6 @@
 #ifndef DOTLANG_LEXER_HPP
 #define DOTLANG_LEXER_HPP
 
-
 #include <sstream>
 #include <map>
 #include "Token.hpp"
@@ -72,6 +71,8 @@ class Lexer {
 
     Token *lex();
     unsigned long addsym();
+
+    char get();
 
     Token *lexString();
 public:

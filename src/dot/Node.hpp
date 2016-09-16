@@ -22,7 +22,9 @@
 
 
 #include <string>
+#include <vector>
 #include "type/DotValue.hpp"
+#include "../lens/TList.hpp"
 
 class Dot;
 class Scope;
@@ -55,7 +57,7 @@ struct VarExprNode: public ExprNode {
 struct BinaryOpNode: public ExprNode {
     int op;
     ExprNode *left, *right;
-    const char *type() { return "node_operator"; }
+    const char *type() { return "node_binary_operator"; }
     BinaryOpNode(int op, ExprNode *left, ExprNode *right): op(op), left(left), right(right) {}
     DotValue *execute(Dot *dot, Scope *scope, TreeWalker *walker);
 };
@@ -75,18 +77,33 @@ struct AssignOpNode: public ExprNode {
     DotValue *execute(Dot *dot, Scope *scope, TreeWalker *walker);
 };
 struct ListNode: public ExprNode {
-    ListNode *prev = nullptr, *next = nullptr;
-    ExprNode *val = nullptr;
+    lens::TList<ExprNode *> *list;
     const char *type() { return "node_list"; }
+    ListNode(lens::TList<ExprNode *> *list): list(list) {}
     DotValue *execute(Dot *dot, Scope *scope, TreeWalker *walker);
 };
 struct CallNode: public ExprNode {
     unsigned long id;
-    ListNode *args;
+    std::vector<ExprNode *> args;
     const char *type() { return "node_method_call"; }
-    CallNode(unsigned long id, ListNode *node): id(id), args(node) {}
+    CallNode(unsigned long id, std::vector<ExprNode*> args): id(id), args(args) {}
     DotValue *execute(Dot *dot, Scope *scope, TreeWalker *walker);
 };
+struct DefVarNode: public ExprNode {
+    unsigned long id;
+    ExprNode *right;
+    const char *type() { return "node_define_var"; }
+    DefVarNode(unsigned long id, ExprNode *right): id(id), right(right) {}
+    DotValue *execute(Dot *dot, Scope *scope, TreeWalker *walker);
+};
+struct DefMethodNode: public ExprNode {
+    unsigned long id;
+    std::vector<unsigned long> args;
+    ListNode *code;
 
+    const char *type() { return "node_define_method"; }
+    DefMethodNode(unsigned long id, std::vector<unsigned long> args, ListNode *code): id(id), args(args), code(code) {}
+    DotValue *execute(Dot *dot, Scope *scope, TreeWalker *walker);
+};
 
 #endif //DOTLANG_NODE_HPP

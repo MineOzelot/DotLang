@@ -42,7 +42,7 @@ DotValue *BinaryOpNode::execute(Dot *dot, Scope *scope, TreeWalker *walker) {
 DotValue *AssignOpNode::execute(Dot *dot, Scope *scope, TreeWalker *walker) {
     DotVariable *var = scope->getVariable(left->name);
     if(!var) {
-        scope->define(left->name, (var = new DotVariable(dot)));
+        return dot->getNull();
     }
     return static_cast<AssignOperator*>(dot->getOperator(op))->exec(
             this, var,
@@ -51,16 +51,32 @@ DotValue *AssignOpNode::execute(Dot *dot, Scope *scope, TreeWalker *walker) {
 }
 
 DotValue *ListNode::execute(Dot *dot, Scope *scope, TreeWalker *walker) {
-    walker->enter(this);
+    walker->enter(this, scope->child());
     return dot->getNull();
 }
 
 DotValue *CallNode::execute(Dot *dot, Scope *scope, TreeWalker *walker) {
     std::vector<DotValue *> values;
-    while(args) {
-        if(!args->val) break;
-        else values.push_back(walker->exec(args->val));
-        args = args->next;
+    for(std::vector<ExprNode *>::iterator it = args.begin(); it != args.end(); it++) {
+        if(!(*it)) break;
+        else values.push_back(walker->exec(*it));
     }
-    return dot->operatorMethod->exec(this, id, std::move(values), scope);
+    return dot->operatorMethod->exec(this, id, values, scope, walker);
+}
+
+DotValue *DefVarNode::execute(Dot *dot, Scope *scope, TreeWalker *walker) {
+    DotVariable *var;
+    if(!(var = scope->getVariable(id))) {
+        scope->define(id, (var = new DotVariable(dot)));
+    }
+    if(right) {
+        var->setValue(walker->exec(right));
+    }
+    return var->getValue();
+}
+
+DotValue *DefMethodNode::execute(Dot *dot, Scope *scope, TreeWalker *walker) {
+    DotMethod *met = new DefinedMethod(dot, args, code);
+    scope->define(id, met);
+    return dot->getNull();
 }

@@ -17,22 +17,26 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <iostream>
 #include "NodeExecutor.hpp"
 #include "operator/BinaryOperator.hpp"
 #include "Dot.hpp"
 
-TreeWalker::TreeWalker(Dot *dot, Scope *scope): scope(scope), dot(dot) { }
+TreeWalker::TreeWalker(Dot *dot): dot(dot) {
+    current.scope = dot->getGlobalScope();
+}
 
 bool TreeWalker::next() {
-    if(current && current->val) {
-        exec(current->val);
-        if(doNext) current = current->next; else doNext = true;
+    if(!current.isExecuted) {
+        current.isExecuted = true;
+        exec(current.exec->get());
+        if(current.isExecuted && current.exec->next()) {
+            current.isExecuted = false;
+        }
     } else {
         if(!stack.empty()) {
             current = stack.top();
             stack.pop();
-            scope = scope->close();
+            current.scope->close();
         } else {
             return false;
         }
@@ -40,31 +44,26 @@ bool TreeWalker::next() {
     return true;
 }
 
-void TreeWalker::reset(Scope *scope) {
-    current = nullptr;
-    this->scope = scope;
-}
-
-void TreeWalker::enter(ListNode *node) {
+void TreeWalker::enter(ListNode *node, Scope *scope) {
     if(node) {
-        if(current) {
-            stack.push(current->next);
-            doNext = false;
-        }
-        scope = scope->child();
-        current = node;
+        if(current.exec)
+            stack.push(current);
+
+        current.scope = scope;
+        current.exec = new lens::TList<ExprNode *>(*node->list);
+        current.isExecuted = false;
     }
 }
 
 DotValue *TreeWalker::exec(ExprNode *node) {
-    return node->execute(dot, scope, this);
+    return node->execute(dot, current.scope, this);
 }
 
 NodeExecutor::NodeExecutor(Dot *dot): dot(dot) {}
 
 DotValue *NodeExecutor::start(ExprNode *node) {
     if(!node) return dot->getNull();
-    if(!walker) walker = new TreeWalker(dot, dot->getGlobalScope());
+    if(!walker) walker = new TreeWalker(dot);
     return walker->exec(node);
 }
 

@@ -23,7 +23,7 @@
 #include <string>
 
 struct Exception {
-    const std::string &msg;
+    const std::string msg;
     Exception(const std::string &msg): msg(msg) {}
     virtual ~Exception() {}
 };

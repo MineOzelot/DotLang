@@ -21,8 +21,12 @@
 #include "../Dot.hpp"
 
 
-DotVariable::DotVariable(Dot *dot) {
+DotVariable::DotVariable(Dot *dot): dot(dot) {
     value = dot->getNull();
+}
+
+DotVariable::DotVariable(Dot *dot, DotValue *val): dot(dot) {
+    value = val;
 }
 
 void DotVariable::setValue(DotValue *val) {

@@ -23,6 +23,8 @@
 #include "dot/Dot.hpp"
 
 int main(int argc, char *argv[]) {
+    std::basic_string<float> a;
+
     std::istream *in;
     if(argc > 1) {
         std::ifstream *ifs = new std::ifstream(argv[1]);

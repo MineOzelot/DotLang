@@ -33,7 +33,7 @@ public:
 class MethodOperator: public BaseOperator {
 public:
     MethodOperator(Dot *dot): BaseOperator(dot) {}
-    DotValue *exec(ExprNode *node, unsigned long id, std::vector<DotValue*> args, Scope *scope);
+    DotValue *exec(ExprNode *node, unsigned long id, std::vector<DotValue*> args, Scope *scope, TreeWalker *walker);
 };
 
 class AddOperator: public BinaryOperator {

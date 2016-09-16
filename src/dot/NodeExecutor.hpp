@@ -28,25 +28,26 @@
 
 class Dot;
 
+struct ExprScope {
+    bool isExecuted = false;
+
+    lens::TList<ExprNode *> *exec;
+    Scope *scope;
+};
+
 class TreeWalker {
-    ListNode *current;
+    ExprScope current;
+    std::stack<ExprScope> stack;
 
     Dot *dot;
-    Scope *scope;
-
-    bool doNext = true;
-
-    std::stack<ListNode *> stack;
 public:
-    TreeWalker(Dot *dot, Scope *scope);
+    TreeWalker(Dot *dot);
 
     bool next();
 
-    void enter(ListNode *node);
+    void enter(ListNode *node, Scope *sc);
 
     DotValue *exec(ExprNode *node);
-
-    void reset(Scope *scope);
 };
 
 class NodeExecutor {

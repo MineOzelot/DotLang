@@ -19,6 +19,7 @@
 
 #include <iostream>
 #include "Parser.hpp"
+#include "../Exception.hpp"
 
 
 Parser::Parser(Lexer *lex): lex(lex) {}
@@ -26,13 +27,9 @@ Parser::Parser(Lexer *lex): lex(lex) {}
 ExprNode *Parser::parse() {
     tokens.push_back(lex->nextToken());
     curtok = tokens.get();
-    ListNode *list = new ListNode();
-    ListNode *cur = list;
+    lens::TList<ExprNode *> *list = new lens::TList<ExprNode *>();
     while (curtok->type != T_EOF) {
-        cur->val = parseStmt();
-        cur->next = new ListNode();
-        cur->next->prev = cur;
-        cur = cur->next;
+        list->push_back(parseStmt());
     }
     tokens.to_end();
     do {
@@ -40,7 +37,7 @@ ExprNode *Parser::parse() {
         tokens.prev();
     } while(!tokens.is_head());
     tokens.clear();
-    return list;
+    return new ListNode(list);
 }
 
 bool Parser::isOperator(TokenType t) {
@@ -89,6 +86,7 @@ Token *Parser::prevToken() {
 }
 
 ExprNode *Parser::error(const char *msg) {
-    std::cout << msg << " at " << curtok->pos << std::endl;
-    return nullptr;
+    std::stringstream buf;
+    buf << msg << " at " << curtok->pos;
+    throw ParserException(buf.str());
 }

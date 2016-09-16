@@ -17,12 +17,17 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <vector>
 #include "Parser.hpp"
 
 
 ExprNode *Parser::parseStmt() {
     switch (curtok->type) {
         case T_IDENT: return parseIdent();
+
+        case T_KW_VAR: return parseVarKW();
+        case T_KW_DEF: return parseDefKW();
+
         case T_LBRACE: return parseBraces();
         default: return error("syntax error");
     }
@@ -47,20 +52,15 @@ ExprNode *Parser::parseIdent() {
     }
 }
 
-ListNode *Parser::parseArgList() {
-    ListNode *ret = new ListNode();
-    ListNode *cur = ret;
+std::vector<ExprNode*> Parser::parseArgList() {
+    std::vector<ExprNode*> ret;
     while(true) {
         if(curtok->type == T_RPARENT) break;
         ExprNode *node = parseExpr();
-        ListNode *next = new ListNode();
-        cur->val = node;
-        next->prev = cur;
-        cur->next = next;
-        cur = next;
+        ret.push_back(node);
+        if(curtok->type == T_RPARENT) break;
         if(curtok->type == T_COMMA) { nextToken(); continue; }
-        else if(curtok->type == T_RPARENT) break;
-        else return (ListNode *) error("syntax error");
+        else error("syntax error");
     }
     nextToken();
     return ret;
@@ -114,19 +114,51 @@ ExprNode *Parser::parseOperator(ExprNode *left) {
 }
 
 ExprNode *Parser::parseBraces() {
-    ListNode *ret = new ListNode();
-    ListNode *cur = ret;
     nextToken();
+    lens::TList<ExprNode *> *list = new lens::TList<ExprNode *>();
     while(true) {
-        if(curtok->type==T_RBRACE) break;
-        else if(curtok->type==T_EOF) return error("expected }");
-        ExprNode *node = parseExpr();
-        ListNode *next = new ListNode();
-        cur->val = node;
-        next->prev = cur; //todo: сделать ListNodeBuilder
-        cur->next = next;
-        cur = next;
+        if(curtok->type == T_RBRACE) break;
+        else if(curtok->type == T_EOF) return error("expected }");
+        list->push_back(parseStmt());
     }
     nextToken();
-    return ret;
+    return new ListNode(list);
+}
+
+ExprNode *Parser::parseVarKW() {
+    switch(nextToken()->type) {
+        case T_IDENT: {
+            unsigned long sym = curtok->symbol_id;
+            if(nextToken()->type == T_ASSIGN) {
+                nextToken();
+                ExprNode *right = parseExpr();
+                return new DefVarNode(sym, right);
+            } else {
+                return new DefVarNode(sym, nullptr);
+            }
+        } default: return error("syntax error");
+    }
+}
+
+ExprNode *Parser::parseDefKW() {
+    switch(nextToken()->type) {
+        case T_IDENT: {
+            unsigned long sym = curtok->symbol_id;
+            std::vector<unsigned long> args;
+            if(nextToken()->type == T_LPARENT) {
+                nextToken();
+                while(true) {
+                    if(curtok->type == T_RPARENT) { nextToken(); break; }
+                    else if(curtok->type == T_EOF) return error("expected )");
+                    args.push_back(curtok->symbol_id);
+                    if(nextToken()->type == T_RPARENT) { nextToken(); break; }
+                    if(curtok->type == T_COMMA) { nextToken(); continue; }
+                    else error("syntax error");
+                }
+                return new DefMethodNode(sym, args, static_cast<ListNode *>(parseBraces()));
+            } else {
+                return error("syntax error");
+            }
+        } default: return error("syntax error");
+    }
 }

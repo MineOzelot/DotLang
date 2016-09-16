@@ -31,7 +31,8 @@ class DotValue {
 public:
     DotValue(Dot *dot, DotType *type);
     void setData(void *data);
-    void *getData();
+    template <typename _Return>
+    _Return *getData() { return static_cast<_Return *>(data); }
     DotType *getType();
 };
 

@@ -28,10 +28,6 @@ void DotValue::setData(void *data) {
     this->data = data;
 }
 
-void *DotValue::getData() {
-    return data;
-}
-
 DotType *DotValue::getType() {
     return type;
 }

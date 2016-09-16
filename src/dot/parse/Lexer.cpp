@@ -23,7 +23,7 @@
 
 void Lexer::start(std::istream *str, SymbolTable *symtbl) {
     code = str;
-    cur = (char) str->get();
+    cur = get();
     sym = symtbl;
 }
 
@@ -36,9 +36,9 @@ Token *Lexer::lex() {
     token_start = pos;
     str = "";
     while(true) {
-        int id = getid(cur);
-        int nid = lex_table[state][id];
-        if(nid == 0) {
+        int id = getid(cur, pos);
+        int nid;
+        if(id == -1 || (nid = lex_table[state][id]) == 0) {
             switch (state) {
                 case 1:     return new Token(T_COLON, token_start, 0);
                 case 2:     return new Token(T_ASSIGN, token_start, 0);
@@ -66,6 +66,9 @@ Token *Lexer::lex() {
                 case 24:    return new Token(T_DIV, token_start, 0);
                 case 25:    return new Token(T_LBRACE, token_start, 0);
                 case 26:    return new Token(T_RBRACE, token_start, 0);
+                case 27:
+                case 28:    return new Token(T_IDENT, token_start, addsym());
+                case 29:    return new Token(T_KW_VAR, token_start, 0);
 
                 default: throw LexerException(str);
             }
@@ -74,13 +77,8 @@ Token *Lexer::lex() {
             str = "";
         } else {
             state = nid;
-            if(state == 16) {
-                cur = (char) code->get();
-                return lexString();
-            }
             str += cur;
-            cur = (char) code->get();
-            pos.next();
+            cur = get();
         }
     }
 }
@@ -102,12 +100,13 @@ Token *Lexer::lexString() {
         if(cur == '\0') {
             std::stringstream msg;
             msg << "Unrecognized character: "
-            << cur << "("
-            << (int) cur << ")";
+                << cur << "("
+                << (int) cur << ")"
+                << " at " << pos;
             throw LexerException(msg.str());
         } else if(cur == '\\') {
             pos.next();
-            switch(code->get()) {
+            switch(get()) {
                 case '0': cur = '\0'; break;
                 case 'a': cur = '\a'; break;
                 case 'b': cur = '\b'; break;
@@ -119,14 +118,17 @@ Token *Lexer::lexString() {
                 default: continue;
             }
         } else if(cur == '\n') {
-            cur = (char) code->get(); pos.next();
+            cur = get();
             continue;
         }
         str += cur;
-        cur = (char) code->get();
-        pos.next();
+        cur = get();
     }
-    cur = (char) code->get();
-    pos.next();
+    cur = get();
     return new Token(T_STRING, token_start, addsym());
+}
+
+char Lexer::get() {
+    pos.next();
+    return (char) code->get();
 }
