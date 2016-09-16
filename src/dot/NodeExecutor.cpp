@@ -34,9 +34,12 @@ bool TreeWalker::next() {
         }
     } else {
         if(!stack.empty()) {
+            current.scope->close();
             current = stack.top();
             stack.pop();
-            current.scope->close();
+            if(current.isExecuted && current.exec->next()) {
+                current.isExecuted = false;
+            }
         } else {
             return false;
         }

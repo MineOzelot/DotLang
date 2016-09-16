@@ -50,5 +50,11 @@ public:
     DotValue *call(Scope *scope, std::vector<DotValue*> args, TreeWalker *walker);
 };
 
+class DotTypeMethod: public DotMethod {
+public:
+    DotTypeMethod(Dot *dot): DotMethod(dot) {}
+    DotValue *call(Scope *scope, std::vector<DotValue*> args, TreeWalker *walker);
+};
+
 
 #endif //DOTLANG_DOTMETHOD_HPP

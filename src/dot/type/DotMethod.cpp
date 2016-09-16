@@ -47,3 +47,8 @@ DotValue *DefinedMethod::call(Scope *scope, std::vector<DotValue *> args, TreeWa
     walker->enter(code, my);
     return dot->getNull(); //todo: return
 }
+
+DotValue *DotTypeMethod::call(Scope *scope, std::vector<DotValue *> args, TreeWalker *walker) {
+    if(args.empty()) return dot->getNull();
+    return dot->createString(args[0]->getType()->getName());
+}

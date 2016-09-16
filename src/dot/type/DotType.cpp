@@ -97,7 +97,7 @@ DotValue *DotString::create(std::string str) {
 }
 
 DotValue *DotString::add(DotValue *str1, DotValue *str2) {
-    std::string *val1 = str1->getData<std::string>();
+    std::string *val1 = str1->getType()->to_str(str1)->getData<std::string>();
     std::string *val2 = str2->getType()->to_str(str2)->getData<std::string>();
     std::string res = *val1 + *val2;
     return create(res);

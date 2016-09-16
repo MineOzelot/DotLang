@@ -44,6 +44,7 @@ void Dot::init() {
     operators.push_back(new DivOperator(this)); //5
 
     defineMethod("print", new DotPrintMethod(this));
+    defineMethod("type", new DotTypeMethod(this));
 }
 
 ExprNode *Dot::parse(std::istream *in) {
@@ -109,7 +110,7 @@ void Dot::defineVariable(std::string name, DotVariable *var) {
 }
 
 void Dot::defineMethod(std::string name, DotMethod *met) {
-    if(symtbl->contains(name)) symtbl->add(name);
+    if(!symtbl->contains(name)) symtbl->add(name);
     global_scope->define(symtbl->id(name), met);
 }
 

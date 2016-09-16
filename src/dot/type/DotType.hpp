@@ -33,6 +33,10 @@ protected:
 public:
     DotType(Dot *dot, const std::string &name);
 
+    std::string getName() {
+        return name;
+    }
+
     virtual DotValue *create();
 
     virtual DotValue *add(DotValue *num1, DotValue *num2);

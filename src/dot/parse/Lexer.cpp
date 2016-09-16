@@ -115,6 +115,12 @@ Token *Lexer::lexString() {
                 case 'v': cur = '\v'; break;
                 case 'f': cur = '\f'; break;
                 case 'r': cur = '\r'; break;
+
+                case '"': cur = '"'; break;
+                case '\'': cur = '\''; break;
+                case '\\': cur = '\\'; break;
+                case '/': cur = '/'; break;
+
                 default: continue;
             }
         } else if(cur == '\n') {
