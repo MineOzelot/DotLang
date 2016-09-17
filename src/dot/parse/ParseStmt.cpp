@@ -71,6 +71,7 @@ ExprNode *Parser::parseExpr() {
         case T_IDENT: return parseIdent();
         case T_NUMBER: return parseNumber();
         case T_STRING: return parseString();
+        case T_LPARENT: return parseParentheses();
         case T_LBRACE: return parseBraces();
         default: return error("syntax error");
     }
@@ -160,5 +161,17 @@ ExprNode *Parser::parseDefKW() {
                 return error("syntax error");
             }
         } default: return error("syntax error");
+    }
+}
+
+ExprNode *Parser::parseParentheses() {
+    if(nextToken()->type != T_RPARENT) {
+        ExprNode *node = parseExpr();
+        if(curtok->type != T_RPARENT)
+            return error("expected )");
+        if(isOperator(nextToken()->type)) return parseOperator(node);
+        return node;
+    } else {
+        return error("unexpected )");
     }
 }

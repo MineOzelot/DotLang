@@ -69,6 +69,8 @@ Token *Lexer::lex() {
                 case 27:
                 case 28:    return new Token(T_IDENT, token_start, addsym());
                 case 29:    return new Token(T_KW_VAR, token_start, 0);
+                case 30:    return new Token(T_IDENT, token_start, addsym());
+                case 31:    return new Token(T_KW_IF, token_start, 0);
 
                 default: throw LexerException(str);
             }

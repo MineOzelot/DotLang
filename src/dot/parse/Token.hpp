@@ -42,7 +42,7 @@ enum TokenType {
     T_LBRACE, T_RBRACE,
     T_COMMA, T_STRING,
 
-    T_KW_DEF, T_KW_VAR
+    T_KW_DEF, T_KW_VAR, T_KW_IF
 };
 
 struct Token {

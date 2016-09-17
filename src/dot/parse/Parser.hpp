@@ -56,7 +56,10 @@ class Parser {
     ExprNode *parseVarKW();
     ExprNode *parseDefKW();
 
+    ExprNode *parseParentheses();
+
     ExprNode *error(const char *msg);
+
 public:
 
     Parser(Lexer *lex);
